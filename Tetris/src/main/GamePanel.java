@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//현재화면용도
 	
-	// 0 : 메뉴, 1 : 게임화면
+	// 0 : 메뉴, 1 : 게임화면, 2 : 스코어보드, 3 : 설정
 	public static int screen = 0; //초기 0번은 메뉴화면
 	public static boolean screenRefresh = false; //화면전환용
 	
@@ -25,6 +25,8 @@ public class GamePanel extends JPanel implements Runnable {
 	Thread gameThread; //게임 돌아가는 스레드
 	PlayManager pm; //게임룰 관리자
 	Menu mn; //메뉴
+	ScoreBoard sc; //스코어보드
+	Setting st; //세팅
 	
 	public GamePanel() {
 		
@@ -39,6 +41,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		pm = new PlayManager();
 		mn = new Menu();
+		sc = new ScoreBoard();
+		st = new Setting();
 	}
 	
 	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
@@ -88,14 +92,13 @@ public class GamePanel extends JPanel implements Runnable {
 		switch(screen) {
 		
 		case 0 : //메인메뉴
-			KeyHandler.keyCheck();
-			mn.update(); break;
+			mn.update();
+			KeyHandler.keyCheck(); break;
 		
 		case 1 : //게임화면
 			
 			//q누르면 꺼짐
 			if (KeyHandler.QPressed) {
-				System.out.println(screen);
 				System.exit(0);
 			}
 			//퍼즈 or 게임오버아닌경우 계속진행
@@ -113,7 +116,15 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			break;
+		case 2 : //스코어보드
+			sc.update();
+			KeyHandler.keyCheck();
+			break;
 		
+		case 3 : //설정
+			st.update();
+			KeyHandler.keyCheck();
+			break;
 		}
 	}
 	
@@ -135,16 +146,20 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		
 		
-		//잠시꺼둠 메뉴개발
-		
 		
 		
 		switch(screen) {
 		case 0 : //메인메뉴
 			mn.draw(g2);
 			break;
-		case 1 : 
+		case 1 : //게임화면
 			pm.draw(g2);
+			break;
+		case 2 : //스코어보드
+			sc.draw(g2);
+			break;
+		case 3 : //설정
+			st.draw(g2);
 			break;
 		}
 		

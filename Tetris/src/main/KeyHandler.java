@@ -66,19 +66,41 @@ public class KeyHandler implements KeyListener{
 	
 	
 	
-	//키값오류 잡아주는 용도
+	//키값오류 잡아주는 용도 //선입력방지용
 	public static void keyCheck() {
 		if(KeyHandler.QPressed) {
 			KeyHandler.QPressed = false; //메인메뉴는 q안눌러도 나가는 키 만듦 만약 qpressed 상태일시 초기화.
 		}
 		
 		if(KeyHandler.escPressed) {
-			KeyHandler.escPressed = false; //메인메뉴는 q안눌러도 나가는 키 만듦 만약 qpressed 상태일시 초기화.
+			KeyHandler.escPressed = false; //pressed 상태일시 초기화.
 		}
 		
 		if(KeyHandler.pausePressed) {
-			KeyHandler.pausePressed = false; //메인메뉴는 q안눌러도 나가는 키 만듦 만약 qpressed 상태일시 초기화.
+			KeyHandler.pausePressed = false; //pressed 상태일시 초기화.
 		}
+		
+		if(KeyHandler.enterPressed) {
+			KeyHandler.enterPressed = false; //pressed 상태일시 초기화.
+		}
+		
+		if (KeyHandler.downPressed == true) {
+			KeyHandler.downPressed = false; //pressed 상태일시 초기화.
+		}
+		
+		if (KeyHandler.upPressed == true) {
+			KeyHandler.upPressed = false; //pressed 상태일시 초기화.
+		}
+		
+		if (KeyHandler.rightPressed == true) {
+			KeyHandler.rightPressed = false; //pressed 상태일시 초기화.
+		}
+		
+		if (KeyHandler.leftPressed == true) {
+			KeyHandler.leftPressed = false; //pressed 상태일시 초기화.
+		} 
+		
+		
 	}
 	
 	
