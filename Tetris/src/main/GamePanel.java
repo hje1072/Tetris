@@ -138,6 +138,7 @@ public class GamePanel extends JPanel implements Runnable {
 					pm.allReset();
 					KeyHandler.menuPressed = false;
 				}
+				KeyHandler.keyCheck();
 			}
 			break;
 		case 2 : //스코어보드

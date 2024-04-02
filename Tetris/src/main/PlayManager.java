@@ -53,8 +53,8 @@ public class PlayManager {
 	
 	// 점수
 	int level = 1;
-	int lines;
-	int score;
+	int lines = 0;
+	int score = 0;
 	
 	
 	
@@ -68,7 +68,7 @@ public class PlayManager {
 		
 		//스타트지점
 		MINO_START_X = left_x + (WIDTH / 2) - Block.SIZE; //x축 중앙
-		MINO_START_Y = top_y + Block.SIZE; //y축 맨위
+		MINO_START_Y = top_y - Block.SIZE ; //y축 맨위
 		
 		//다음미노 블록설정
 		NEXTMINO_X = right_x + 175;
@@ -90,6 +90,7 @@ public class PlayManager {
 		lines = 0;
 		score = 0;
 		gameOver = false;
+		KeyHandler.pausePressed = false;
 		
 		
 		currentMino = pickMino();
@@ -123,6 +124,29 @@ public class PlayManager {
 		
 	}
 	
+	//게임오버 확인용
+	public boolean isgameOver() {
+		
+		boolean full = false;
+		
+		for(int i = 0; i < PlayManager.staticBlocks.size(); i++) {
+			//쌓인블록 하나씩 꺼내기 y값 알아내기위함.
+			int targetY = PlayManager.staticBlocks.get(i).y;
+			
+			//위치체크
+			for(int ii = 0; ii < currentMino.b.length; ii++) {
+				if(targetY <= top_y) { 
+					//한놈이라도 빨간줄에 걸치거나 나가면 게임종료.
+					full = true;
+				}
+			}
+			
+		}
+		return full;
+	}
+	
+	
+	
 	public void update() {
 		
 		
@@ -134,13 +158,14 @@ public class PlayManager {
 			staticBlocks.add(currentMino.b[2]);
 			staticBlocks.add(currentMino.b[3]);
 			
+			/*
 			//게임오버 확인용
 			if(currentMino.b[0].x == MINO_START_X && currentMino.b[0].y == MINO_START_Y) {
 				//스타팅위치에서 바로 움직일 수 없는 위치일경우?
 				//바로 게임종료. 괜히 슬라이딩해서 계속끌기 막자
 				gameOver = true;
 			}
-			
+			*/
 			
 			currentMino.deactivating = false;
 			
@@ -152,6 +177,12 @@ public class PlayManager {
 			
 			//블록을 놓은후 라인이 지워지는지 확인해주자.
 			checkDelete();
+			
+			//게임오버 확인후 테트리스 게임 종료
+			//staticBlocks 상태 보고 결정
+			//System.out.println(isgameOver()); 확인용
+			gameOver = isgameOver();
+			
 			
 		}
 		else {
@@ -298,6 +329,22 @@ public class PlayManager {
 		g2.setStroke(new BasicStroke(4f)); //테두리크기 4픽셀이라는 뜻
 		g2.drawRect(left_x - 4, top_y - 4, WIDTH + 8, HEIGHT + 8); //네모그려주기 rectangle
 		
+		
+		//게임종료라인 만들기
+		g2.setColor(Color.black);
+		g2.drawLine(left_x - 4 , top_y - 4, left_x + WIDTH + 8, top_y - 4);
+		g2.setColor(Color.red);
+		float[] dashPattern = {5, 5};
+		BasicStroke dashedStroke = new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dashPattern, 0.0f);
+		g2.setStroke(dashedStroke);
+		g2.drawLine(left_x - 4 , top_y - 4, left_x + WIDTH + 8, top_y - 4);
+		
+		
+		//상자설치용 라인그리기.
+		g2.setColor(Color.white);
+		g2.setStroke(new BasicStroke(4f));
+		
+		
 		//다음 미노타일 예고상자
 		int x = right_x + 100;
 		int y = bottom_y - 200;
@@ -319,7 +366,7 @@ public class PlayManager {
 		
 		
 		//현재블록 그려주기 오류없으면 그려주세요
-		if(currentMino != null) {
+		if((currentMino != null) && (gameOver == false)) {
 			currentMino.draw(g2);
 		}
 		
