@@ -179,6 +179,25 @@ public class Mino {
 			deactivating();
 		}
 		
+		
+		//쾅 내리기
+		if(KeyHandler.fallPressed) {
+			
+			while (bottomCollision == false) {
+				b[0].y += Block.SIZE;
+				b[1].y += Block.SIZE;
+				b[2].y += Block.SIZE;
+				b[3].y += Block.SIZE;
+				
+				checkMovementCollision(); 
+			}
+			
+			//떨어지는 속도 조절시 오토드랍카운터는 초기화시켜줍시다.
+			deactivateCounter = 1557;
+			
+			KeyHandler.fallPressed = false;
+		}
+		
 		//블록 움직이기
 		if(KeyHandler.upPressed) {
 			switch(direction) {
@@ -195,9 +214,9 @@ public class Mino {
 		
 		checkMovementCollision();
 		
+		//밑에 내려도 되는 경우, 내림
 		if(KeyHandler.downPressed) {
 			
-			//밑에 내려도 되는 경우, 내림
 			if (bottomCollision == false) {
 				b[0].y += Block.SIZE;
 				b[1].y += Block.SIZE;
@@ -259,7 +278,7 @@ public class Mino {
 		deactivateCounter ++;
 		
 		//슬라이딩은 20 frame 정도 시간을 줄게.
-		if(deactivateCounter == 20) {
+		if(deactivateCounter >= 20) {
 			
 			deactivateCounter = 0;
 			checkMovementCollision(); // 45프레임동안 대기후 바닥에 닿아있네? 바로 active 끄기.

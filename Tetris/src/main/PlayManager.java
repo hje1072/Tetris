@@ -89,6 +89,8 @@ public class PlayManager {
 		level = 1;
 		lines = 0;
 		score = 0;
+		gameOver = false;
+		
 		
 		currentMino = pickMino();
 		currentMino.setXY(MINO_START_X, MINO_START_Y);

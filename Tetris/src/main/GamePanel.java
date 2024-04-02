@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
@@ -15,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//현재화면용도
 	
-	// 0 : 메뉴, 1 : 게임화면
+	// 0 : 메뉴, 1 : 게임화면, 2 : 스코어보드, 3 : 설정
 	public static int screen = 0; //초기 0번은 메뉴화면
 	public static boolean screenRefresh = false; //화면전환용
 	
@@ -25,7 +26,29 @@ public class GamePanel extends JPanel implements Runnable {
 	Thread gameThread; //게임 돌아가는 스레드
 	PlayManager pm; //게임룰 관리자
 	Menu mn; //메뉴
+	ScoreBoard sc; //스코어보드
+	Setting st; //세팅
 	
+	
+	//키보드세팅용도
+	public static int keySetting[] = new int[9];
+	//0 = 돌리기, 1 = 내리기, 2 = 왼쪽, 3 = 오른쪽, 4 = 게임중 종료
+	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택
+	
+	public void keySetting() {
+		keySetting[0] = KeyEvent.VK_UP; 
+		keySetting[1] = KeyEvent.VK_DOWN;
+		keySetting[2] = KeyEvent.VK_LEFT;
+		keySetting[3] = KeyEvent.VK_RIGHT;
+		keySetting[4] = KeyEvent.VK_Q;
+		keySetting[5] = KeyEvent.VK_SPACE;
+		keySetting[6] = KeyEvent.VK_P;
+		keySetting[7] = KeyEvent.VK_ESCAPE;
+		keySetting[8] = KeyEvent.VK_ENTER;
+	}
+	
+	
+	//생성자.
 	public GamePanel() {
 		
 		//윈도우창 세팅
@@ -37,8 +60,13 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addKeyListener(new KeyHandler());
 		this.setFocusable(true);
 		
+		//기본키세팅 설정
+		keySetting();
+		
 		pm = new PlayManager();
 		mn = new Menu();
+		sc = new ScoreBoard();
+		st = new Setting();
 	}
 	
 	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
@@ -88,14 +116,13 @@ public class GamePanel extends JPanel implements Runnable {
 		switch(screen) {
 		
 		case 0 : //메인메뉴
-			KeyHandler.keyCheck();
-			mn.update(); break;
+			mn.update();
+			KeyHandler.keyCheck(); break;
 		
 		case 1 : //게임화면
 			
 			//q누르면 꺼짐
-			if (KeyHandler.QPressed) {
-				System.out.println(screen);
+			if (KeyHandler.quitPressed) {
 				System.exit(0);
 			}
 			//퍼즈 or 게임오버아닌경우 계속진행
@@ -104,16 +131,24 @@ public class GamePanel extends JPanel implements Runnable {
 				KeyHandler.keyCheck();
 			}
 			else {
-				if(KeyHandler.escPressed) {
+				if(KeyHandler.menuPressed) {
 					screen = 0;
 					
 					//게임 재시작을 대비한 리셋장치.
 					pm.allReset();
-					KeyHandler.escPressed = false;
+					KeyHandler.menuPressed = false;
 				}
 			}
 			break;
+		case 2 : //스코어보드
+			sc.update();
+			KeyHandler.keyCheck();
+			break;
 		
+		case 3 : //설정
+			st.update();
+			KeyHandler.keyCheck();
+			break;
 		}
 	}
 	
@@ -135,16 +170,20 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		
 		
-		//잠시꺼둠 메뉴개발
-		
 		
 		
 		switch(screen) {
 		case 0 : //메인메뉴
 			mn.draw(g2);
 			break;
-		case 1 : 
+		case 1 : //게임화면
 			pm.draw(g2);
+			break;
+		case 2 : //스코어보드
+			sc.draw(g2);
+			break;
+		case 3 : //설정
+			st.draw(g2);
 			break;
 		}
 		
