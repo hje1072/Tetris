@@ -108,6 +108,7 @@ public class Mino {
 		rightCollision = false;
 		bottomCollision = false;
 		
+		
 		//내가 쌓은 블록 check
 		checkStaticBlockCollision();
 		
@@ -170,7 +171,11 @@ public class Mino {
 			
 			
 		}
+		
+		
 	}
+	
+	
 		
 	
 	public void update() {

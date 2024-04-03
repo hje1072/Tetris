@@ -17,7 +17,7 @@ public class Setting {
 		//방향키조작용
 		if (KeyHandler.downPressed == true) {
 			pointer_y += 1;
-			if (pointer_y >= 4 ) {
+			if (pointer_y >= 5 ) {
 				pointer_y = 0;
 			}
 			KeyHandler.downPressed = false;
@@ -45,24 +45,59 @@ public class Setting {
 		}
 		
 		
-		
+		//수정필요
 		if (KeyHandler.enterPressed == true) {
 			KeyHandler.enterPressed = false;
 			
 			switch(pointer_y) {
-			case 0 :  // 게임 화면으로
-				GamePanel.screenRefresh = true;
-				GamePanel.screen = 1; //1번이 게임화면
+			case 0 :  //해상도
+				switch(pointer_x) {
+				case 0 :
+					// 640 * 360
+					break;
+				case 1 : //디폴트값.
+					// 1280 * 720
+					break;
+				case 2 : 
+					//1920 * 1080
+					break;
+				}
 				break;
-			case 1 : //스코어보드
-				GamePanel.screenRefresh = true;
-				GamePanel.screen = 2;
+			case 1 : //키보드설정1
+				
+				switch(pointer_x) {
+				case 0 :
+					//0 = 돌리기
+					break;
+				case 1 :
+					// 1 = 내리기
+					break;
+				case 2 : 
+					//2 = 왼쪽
+					break;
+				case 3 : 
+					//3 = 오른쪽
+					break;
+				}
+				
+				
+				
 				break;
-			case 2 : //설정
-				GamePanel.screenRefresh = true;
-				GamePanel.screen = 3;
+			case 2 : //키보드 설정 2
+			
 				break;
-			case 3 : System.exit(0);
+			
+			case 3 : //키보드 세팅 변경 확인용도.
+				break;
+				
+			case 4 : //색맹모드
+				
+				break;
+			case 5 : //스크어보드초기화.
+				
+				
+				break;
+			
 			}
 		
 		}

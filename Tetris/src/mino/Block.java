@@ -5,9 +5,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Block extends Rectangle{
+	 
 	
 	public int x, y;
-	public static final int SIZE = 30; //30X30픽셀사이즈로 만들어줄거임.
+	public static int SIZE = 30; //30X30픽셀사이즈로 만들어줄거임. 이건 1280 * 720 기준
 	public Color c;
 	
 	//색깔결정해주기

@@ -85,9 +85,6 @@ public class KeyHandler implements KeyListener{
 			KeyHandler.menuPressed = false; //메뉴버튼 초기화
 		}
 		
-		if(KeyHandler.pausePressed) {
-			KeyHandler.pausePressed = false; //pause 초기화
-		}
 		
 		if(KeyHandler.enterPressed) {
 			KeyHandler.enterPressed = false; //확인버튼 초기화.
