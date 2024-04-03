@@ -57,37 +57,37 @@ public class Menu {
 		int x = GamePanel.WIDTH / 8;
 		int y = GamePanel.HEIGHT / 4;
 		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 120));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60 + 60 * GamePanel.SIZE));
 		g2.drawString("Tetris", x, y);
 		
 		//스타트버튼
 		x += GamePanel.WIDTH / 2;
-		y += 100;
+		y += 50 + 50 * GamePanel.SIZE;
 		
 		g2.setColor((pointer == 0) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("Start The Game", x, y);
 		
 		//스코어보드
-		y += 100;
+		y += 50 + 50 * GamePanel.SIZE;
 		g2.setColor((pointer == 1) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("ScoreBoard", x, y);
 		
 		//옵션
-		y += 100;
+		y += 50 + 50 * GamePanel.SIZE;
 		g2.setColor((pointer == 2) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("Setting", x, y);
 		
 		//끝내기
-		y += 100;
+		y += 50 + 50 * GamePanel.SIZE;
 		g2.setColor((pointer == 3) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("Exit", x, y);
 		
-		//확인용 2
-		x -= 400;
+		//확인용 꼭지우셈
+		x -= 200 + 200 * GamePanel.SIZE;
 		g2.setColor(Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60));
 		g2.drawString(""+pointer, x, y);

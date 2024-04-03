@@ -9,7 +9,8 @@ public class Main {
 		//창띄우기
 		JFrame window = new JFrame("Tetris");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
+		window.setResizable(true);
+		
 		
 		//게임창 크기 설정용
 		GamePanel gp = new GamePanel();
