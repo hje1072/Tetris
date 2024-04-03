@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements Runnable {
 	
 	//스크린 사이즈
-	public static final int WIDTH = 1280;
-	public static final int HEIGHT = 720;
+	public static int WIDTH = 1280;
+	public static int HEIGHT = 720;
 	
 	//현재화면용도
 	

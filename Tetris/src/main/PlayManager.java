@@ -23,8 +23,8 @@ import mino.Mino_Z2;
 public class PlayManager {
 	
 	//메인플레이게임 테두리
-	final int WIDTH = 300;
-	final int HEIGHT = 600;
+	int WIDTH = 300;
+	int HEIGHT = 600;
 	public static int left_x;
 	public static int right_x;
 	public static int top_y;
