@@ -5,20 +5,32 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable {
 	
-	//스크린 사이즈
-	public static int WIDTH = 1280;
-	public static int HEIGHT = 720;
+	//해상도 변경용도 0 : 640 * 480, 1 : 1280 * 720, 2 : 1920 * 1080
+	//디폴드값은 1 
+	public static int SIZE = 1;
+	public static boolean sizeChange = false;
 	
-	//현재화면용도
+	
+	//스크린 사이즈
+	public static int WIDTH = 640 + 640 * SIZE;
+	public static int HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+	
+	//해상도에 맞는 사이즈설정.
+	public static int blockSize = 20 + 10 * SIZE;
+	
 	
 	// 0 : 메뉴, 1 : 게임화면, 2 : 스코어보드, 3 : 설정
 	public static int screen = 0; //초기 0번은 메뉴화면
-	public static boolean screenRefresh = false; //화면전환용
+	public static boolean screenRefresh = false; //화면전환용 
 	
 	
 	//게임 루프용 clock
@@ -36,6 +48,33 @@ public class GamePanel extends JPanel implements Runnable {
 	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택
 	
 	public void keySetting() {
+		
+		//키세팅저장csv파일 불러오기.
+		
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/keySetting.csv";
+        String line = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	
+        	int i = 0;
+        	int num ;
+            while ((line = br.readLine()) != null) {
+                
+            	num = Integer.parseInt(line);
+            	keySetting[i] = num;
+            	
+            	i++;
+            }
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        //확인용
+        //System.out.println("=================="); // 줄 바꿈
+		
+        
 		keySetting[0] = KeyEvent.VK_UP; 
 		keySetting[1] = KeyEvent.VK_DOWN;
 		keySetting[2] = KeyEvent.VK_LEFT;
@@ -45,6 +84,8 @@ public class GamePanel extends JPanel implements Runnable {
 		keySetting[6] = KeyEvent.VK_P;
 		keySetting[7] = KeyEvent.VK_ESCAPE;
 		keySetting[8] = KeyEvent.VK_ENTER;
+		
+        
 	}
 	
 	
@@ -69,6 +110,12 @@ public class GamePanel extends JPanel implements Runnable {
 		st = new Setting();
 	}
 	
+	public void asdf() {
+		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		this.setBackground(Color.black);
+		this.setLayout(null);
+	}
+	
 	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
 	public void launchGame() {
 		gameThread = new Thread(this);
@@ -76,9 +123,21 @@ public class GamePanel extends JPanel implements Runnable {
 		
 	}
 	
+    // 해상도 변경 메서드
+    public void changeResolution(int width, int height) {
+        JFrame frame = (JFrame) getTopLevelAncestor();
+        if (frame != null) {
+            frame.setPreferredSize(new Dimension(width + 16, height + 39));
+            frame.setBackground(Color.black);
+            frame.setLayout(null);
+            frame.pack();
+        }
+    }
+	
 
 	@Override
 	public void run() {
+		
 		
 		//게임루프 과정
 		double drawInterval = 1000000000 / FPS ;
@@ -88,6 +147,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//실행되는한 계속 움직이기
 		while(gameThread != null) {
+			
+			
 			
 			//현재시간
 			currentTime = System.nanoTime();
@@ -111,7 +172,30 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	//게임내용 업데이트용
+	@SuppressWarnings("deprecation") //해상도 바꾸기.
+	//비권장기능사용해버려서 일단 무시하라고 함
+	//비권장 해상도 어떻게 바꿀 지몰라서 비권장기능쓴거라 frfactoring 가능하면 바꿔주셈
 	private void update() {
+		
+		if (sizeChange) {
+			sizeChange = false;
+			
+			//해상도 변경 업데이트
+			WIDTH = 640 + 640 * SIZE;
+			HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+			blockSize = 20 + 10 * SIZE;
+			
+			
+			this.resize(new Dimension(WIDTH, HEIGHT));
+			changeResolution(WIDTH, HEIGHT);
+			
+			
+			Block.SIZE = blockSize;
+			
+			pm = new PlayManager();
+			mn = new Menu();
+			
+		}
 		
 		switch(screen) {
 		
@@ -127,8 +211,10 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			//퍼즈 or 게임오버아닌경우 계속진행
 			else if(KeyHandler.pausePressed == false && pm.gameOver == false) {
+				
 				pm.update();
 				KeyHandler.keyCheck();
+				
 			}
 			else {
 				if(KeyHandler.menuPressed) {

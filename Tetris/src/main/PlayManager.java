@@ -8,23 +8,13 @@ import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.Random;
 
-//블록 불러올때 걍 와카 붙여도될거같은데 일단은 위에 남겨두었음 
-import mino.Block;
-import mino.Mino;
-import mino.Mino_Bar;
-import mino.Mino_L1;
-import mino.Mino_L2;
-import mino.Mino_Square;
-import mino.Mino_T;
-import mino.Mino_Z1;
-import mino.Mino_Z2;
 
 //게임 ui,블록 모양, 그외에 게임 액션등등 
 public class PlayManager {
 	
 	//메인플레이게임 테두리
-	int WIDTH = 300;
-	int HEIGHT = 600;
+	int WIDTH = 200 + 100 * GamePanel.SIZE;
+	int HEIGHT = 400 + 200 * GamePanel.SIZE;
 	public static int left_x;
 	public static int right_x;
 	public static int top_y;
@@ -33,12 +23,12 @@ public class PlayManager {
 	
 	//현재블록
 	Mino currentMino;
-	final int MINO_START_X;
-	final int MINO_START_Y;
+	int MINO_START_X;
+	int MINO_START_Y;
 	//다음블록
 	Mino nextMino;
-	final int NEXTMINO_X;
-	final int NEXTMINO_Y;
+	int NEXTMINO_X;
+	int NEXTMINO_Y;
 	public static ArrayList<Block> staticBlocks = new ArrayList<>();
 	
 	
@@ -71,8 +61,8 @@ public class PlayManager {
 		MINO_START_Y = top_y - Block.SIZE ; //y축 맨위
 		
 		//다음미노 블록설정
-		NEXTMINO_X = right_x + 175;
-		NEXTMINO_Y = top_y + 500;
+		NEXTMINO_X = right_x + 85 + 90 * GamePanel.SIZE;
+		NEXTMINO_Y = top_y + 350 + 150 * GamePanel.SIZE;
 		
 		
 		//블록들 설정해주기(현재블록, 다음블록)
@@ -84,7 +74,10 @@ public class PlayManager {
 		
 	}
 	
+	
 	public void allReset() {
+		
+		
 		dropInterval = 60;
 		level = 1;
 		lines = 0;
@@ -124,7 +117,7 @@ public class PlayManager {
 		
 	}
 	
-	//게임오버 확인용
+	//게임오버 확인용 stactblocks이용
 	public boolean isgameOver() {
 		
 		boolean full = false;
@@ -146,7 +139,7 @@ public class PlayManager {
 	}
 	
 	
-	
+	//업데이트
 	public void update() {
 		
 		
@@ -158,14 +151,6 @@ public class PlayManager {
 			staticBlocks.add(currentMino.b[2]);
 			staticBlocks.add(currentMino.b[3]);
 			
-			/*
-			//게임오버 확인용
-			if(currentMino.b[0].x == MINO_START_X && currentMino.b[0].y == MINO_START_Y) {
-				//스타팅위치에서 바로 움직일 수 없는 위치일경우?
-				//바로 게임종료. 괜히 슬라이딩해서 계속끌기 막자
-				gameOver = true;
-			}
-			*/
 			
 			currentMino.deactivating = false;
 			
@@ -278,50 +263,16 @@ public class PlayManager {
 		
 	}
 	
-	//초기화용 //라인지우는 함수에서 따옴.
+	//초기화용
 	private void allDelete() {
 		
-		int x = left_x;
-		int y = top_y;
-		int blockCount = 0;
-		
-		while(x < right_x && y < bottom_y) {
-			
-			for(int i = 0; i < staticBlocks.size(); i++) {
-				if(staticBlocks.get(i).x == x && staticBlocks.get(i).y == y) {
-					blockCount++;
-				}
-			}
-			
-			x +=Block.SIZE;
-			
-			if(x == right_x) {
-
-				//현재게임에서는 한줄에 10블록이 들어감
-				//그래서 한줄을 훑었는데 블록카운트가 10라는것은 한줄을 완성했다는 뜻.
-				if(blockCount >= 0 ) {
-					
-					for(int i = staticBlocks.size() - 1; i > -1; i--) {
-						//모든 라인 지워주기.
-						if(staticBlocks.get(i).y == y) {
-							staticBlocks.remove(i);
-						}
-						
-					}
-				
-				blockCount = 0;
-				x = left_x;
-				y += Block.SIZE;
-				}
-				
-			}
-			
-		}
+		//쌓은블록초기화
+		staticBlocks = new ArrayList<Block>();
 		
 	}
 	
 	
-	
+	//그리기
 	public void draw(Graphics2D g2) {
 		
 		//플레이 화면테두리 그려주기
@@ -346,19 +297,19 @@ public class PlayManager {
 		
 		
 		//다음 미노타일 예고상자
-		int x = right_x + 100;
-		int y = bottom_y - 200;
-		g2.drawRect(x, y, 200, 200);
+		int x = right_x + (50 + 50 * GamePanel.SIZE);
+		int y = bottom_y - (100 + 100 * GamePanel.SIZE);
+		g2.drawRect(x, y, 100 + 100 * GamePanel.SIZE, 100 + 100 * GamePanel.SIZE);
 		
 		//다음블록 텍스트표현해주기
-		g2.setFont(new Font("Arial", Font.PLAIN, 30));
+		g2.setFont(new Font("Arial", Font.PLAIN, 15 + 15 * GamePanel.SIZE ));
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 이건 그냥 글자 쓰는데 렌더링해주는겨
-		g2.drawString("NEXT", x + 60, y + 60);
+		g2.drawString("NEXT", x + 30 + 30 * GamePanel.SIZE, y + 30 + 30 * GamePanel.SIZE);
 		
 		//점수보드그려주기
-				g2.drawRect(x, top_y, 250, 300);
-				x += 40;
-				y = top_y + 90;
+				g2.drawRect(x, top_y, 125 + 125 * GamePanel.SIZE, 200 + 100 * GamePanel.SIZE);
+				x += 20 + 20 * GamePanel.SIZE;
+				y = top_y + 40 + 50 * GamePanel.SIZE;
 				g2.drawString("LEVEL: " + level, x, y); y+= 70;
 				g2.drawString("LINES: " + lines, x, y); y+= 70;
 				g2.drawString("SCORE: " + score, x, y);
@@ -400,23 +351,23 @@ public class PlayManager {
 		
 		//퍼즈상태 or 게임오버 표시
 		g2.setColor(Color.yellow);
-		g2.setFont(g2.getFont().deriveFont(50f));
+		g2.setFont(new Font("Arial", Font.PLAIN, 25 + 25 * GamePanel.SIZE ));
 		
 		if(gameOver) {
-			x = left_x + 25;
-			y = top_y + 320;
+			x = left_x + 10 + 15 * GamePanel.SIZE;
+			y = top_y + 160 + 160 * GamePanel.SIZE;
 			g2.drawString("GAME OVER", x, y);
 		}
 		else if(KeyHandler.pausePressed) {
-			x = left_x + 70;
-			y = top_y + 320;
+			x = left_x + 35 + 35 * GamePanel.SIZE;
+			y = top_y + 160 + 160 * GamePanel.SIZE;
 			g2.drawString("PAUSE", x, y);
 			
 			//임시용
 			g2.drawString("To quit the game", WIDTH / x, y );
-			g2.drawString("please press 'q'", WIDTH / x, y + 100 );
-			g2.drawString("To return to the menu", WIDTH / x, y + 200);
-			g2.drawString("please press the ESC", WIDTH / x, y + 300);
+			g2.drawString("please press 'q'", WIDTH / x, y + 50 + 50 * GamePanel.SIZE );
+			g2.drawString("To return to the menu", WIDTH / x, y + 100 + 100 * GamePanel.SIZE);
+			g2.drawString("please press the ESC", WIDTH / x, y + 150 + 150 * GamePanel.SIZE);
 		}
 		
 		
