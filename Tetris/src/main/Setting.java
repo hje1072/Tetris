@@ -5,12 +5,54 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 //공사중
 public class Setting {
 	
 	public int pointer_y = 0;
 	public int pointer_x = 0;
+	
+	
+	
+	
+	
+	
+	public void keySet() {
+		
+		//키세팅저장csv파일 불러오기.
+		
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/keySetting.csv";
+        String line = "";
+        String csvSplitBy = ",";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                // CSV 파일의 각 라인을 쉼표로 분리하여 배열로 저장
+                String[] data = line.split(csvSplitBy);
+
+                // 각 열의 데이터를 출력 또는 처리
+                for (String datum : data) {
+                    System.out.print(datum);
+                }
+                System.out.println(); // 줄 바꿈
+            }
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+        
+        
+        
+        
+	}
+	
+	
+	
+	
 	
 	
 	public void update() {
@@ -82,6 +124,7 @@ public class Setting {
 				
 				switch(pointer_x) {
 				case 0 :
+					keySet();
 					//0 = 돌리기
 					break;
 				case 1 :

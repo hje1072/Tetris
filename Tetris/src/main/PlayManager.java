@@ -76,6 +76,8 @@ public class PlayManager {
 	
 	
 	public void allReset() {
+		
+		
 		dropInterval = 60;
 		level = 1;
 		lines = 0;

@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -45,6 +48,33 @@ public class GamePanel extends JPanel implements Runnable {
 	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택
 	
 	public void keySetting() {
+		
+		//키세팅저장csv파일 불러오기.
+		
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/keySetting.csv";
+        String line = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	
+        	int i = 0;
+        	int num ;
+            while ((line = br.readLine()) != null) {
+                
+            	num = Integer.parseInt(line);
+            	keySetting[i] = num;
+            	
+            	i++;
+            }
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        //확인용
+        //System.out.println("=================="); // 줄 바꿈
+		
+        
 		keySetting[0] = KeyEvent.VK_UP; 
 		keySetting[1] = KeyEvent.VK_DOWN;
 		keySetting[2] = KeyEvent.VK_LEFT;
@@ -54,6 +84,8 @@ public class GamePanel extends JPanel implements Runnable {
 		keySetting[6] = KeyEvent.VK_P;
 		keySetting[7] = KeyEvent.VK_ESCAPE;
 		keySetting[8] = KeyEvent.VK_ENTER;
+		
+        
 	}
 	
 	
