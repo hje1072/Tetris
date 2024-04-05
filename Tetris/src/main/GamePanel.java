@@ -43,9 +43,9 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	
 	//키보드세팅용도
-	public static int keySetting[] = new int[9];
+	public static int keySetting[] = new int[10];
 	//0 = 돌리기, 1 = 내리기, 2 = 왼쪽, 3 = 오른쪽, 4 = 게임중 종료
-	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택
+	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택, 9 = 취소
 	
 	public void keySetting() {
 		
@@ -74,8 +74,8 @@ public class GamePanel extends JPanel implements Runnable {
         //확인용
         //System.out.println("=================="); // 줄 바꿈
 		
-        
-		keySetting[0] = KeyEvent.VK_UP; 
+        /*
+		keySetting[0] = KeyEvent.VK_UP;
 		keySetting[1] = KeyEvent.VK_DOWN;
 		keySetting[2] = KeyEvent.VK_LEFT;
 		keySetting[3] = KeyEvent.VK_RIGHT;
@@ -84,9 +84,14 @@ public class GamePanel extends JPanel implements Runnable {
 		keySetting[6] = KeyEvent.VK_P;
 		keySetting[7] = KeyEvent.VK_ESCAPE;
 		keySetting[8] = KeyEvent.VK_ENTER;
+		keySetting[9] = KeyEvent.VK_BACK_SPACE;
 		
-        
+        */
 	}
+	
+	//점수기입용
+	public static boolean enteringScore;
+	public static String score = "0";
 	
 	
 	//생성자.
@@ -217,12 +222,25 @@ public class GamePanel extends JPanel implements Runnable {
 				
 			}
 			else {
+				
+				//게임오버인경우 메뉴로 안가는 경우 점수기입하러 감.
+				if(KeyHandler.enterPressed && pm.gameOver == true) {
+					KeyHandler.enterPressed = false;
+					screen = 2;
+					
+					//점수기입용
+					enteringScore = true;
+					score = Integer.toString(pm.score);
+					
+					pm.allReset();
+				}
+				
 				if(KeyHandler.menuPressed) {
+					KeyHandler.menuPressed = false;
 					screen = 0;
 					
-					//게임 재시작을 대비한 리셋장치.
 					pm.allReset();
-					KeyHandler.menuPressed = false;
+					
 				}
 				KeyHandler.keyCheck();
 			}

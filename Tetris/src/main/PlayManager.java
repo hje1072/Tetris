@@ -82,7 +82,7 @@ public class PlayManager {
 		level = 1;
 		lines = 0;
 		score = 0;
-		gameOver = false;
+		gameOver = false; 
 		KeyHandler.pausePressed = false;
 		
 		
@@ -258,7 +258,7 @@ public class PlayManager {
 		//줄삭제 확인 후 점수 갱신
 		if(lineCount > 0) {
 			int singleLineScore = 10 * level;
-			score += singleLineScore * lineCount;
+			score += singleLineScore * lineCount; 
 		}
 		
 	}
