@@ -67,6 +67,8 @@ public class KeyHandler implements KeyListener{
 		if (code == GamePanel.keySetting[8]) {
 			enterPressed = true;
 		}
+		
+		
 	}
 
 	@Override // 이것도 당장은 안쓸거임

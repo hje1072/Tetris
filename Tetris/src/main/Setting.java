@@ -33,12 +33,14 @@ public class Setting {
             while ((line = br.readLine()) != null) {
                 // CSV 파일의 각 라인을 쉼표로 분리하여 배열로 저장
                 String[] data = line.split(csvSplitBy);
-
+                
+                /*
                 // 각 열의 데이터를 출력 또는 처리
                 for (String datum : data) {
                     System.out.print(datum);
                 }
-                System.out.println(); // 줄 바꿈
+                
+                */ //디버깅용
             }
         } catch (IOException e) {
         	
