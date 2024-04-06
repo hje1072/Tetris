@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -167,6 +168,133 @@ public class Setting {
 		
 	}
 	
+	//현재 키보드설정이 어떻게 되어있는지 알려주는놈.
+	public String whatisKey(int key) {
+		String word = "";
+		
+		//화살표
+		if(key == KeyEvent.VK_UP) {
+			word = "↑";
+		}
+		else if(key == KeyEvent.VK_DOWN) {
+			word = "↓";
+		}
+		else if(key == KeyEvent.VK_LEFT) {
+			word = "←";
+		}
+		else if(key == KeyEvent.VK_RIGHT) {
+			word = "→";
+		}
+		
+		else if(key == KeyEvent.VK_F1) {
+			word = "F1";
+		}
+		else if(key == KeyEvent.VK_F2) {
+			word = "F2";
+		}
+		else if(key == KeyEvent.VK_F3) {
+			word = "F3";
+		}
+		else if(key == KeyEvent.VK_F4) {
+			word = "F4";
+		}
+		else if(key == KeyEvent.VK_F5) {
+			word = "F5";
+		}
+		else if(key == KeyEvent.VK_F6) {
+			word = "F6";
+		}
+		else if(key == KeyEvent.VK_F7) {
+			word = "F7";
+		}
+		else if(key == KeyEvent.VK_F8) {
+			word = "F8";
+		}
+		else if(key == KeyEvent.VK_F9) {
+			word = "F9";
+		}
+		else if(key == KeyEvent.VK_F10) {
+			word = "F10";
+		}
+		else if(key == KeyEvent.VK_F11) {
+			word = "F11";
+		}
+		else if(key == KeyEvent.VK_F12) {
+			word = "F12";
+		}
+		
+		else if(key == KeyEvent.VK_ENTER) {
+			word = "ENTER";
+		}
+		else if(key == KeyEvent.VK_ESCAPE) {
+			word = "ESC";
+		}
+		else if(key == KeyEvent.VK_TAB) {
+			word = "TAB";
+		}
+		else if(key == KeyEvent.VK_SHIFT) {
+			word = "SHIFT";
+		}
+		else if(key == KeyEvent.VK_CONTROL) {
+			word = "CTRL";
+		}
+		else if(key == KeyEvent.VK_ALT) {
+			word = "ALT";
+		}
+		else if(key == KeyEvent.VK_SPACE) {
+			word = "SPACE";
+		}
+		else if(key == KeyEvent.VK_BACK_SPACE) {
+			word = "BACK_SP";
+		}
+		else if(key == KeyEvent.VK_DELETE) {
+			word = "DEL";
+		}
+		else if(key == KeyEvent.VK_HOME) {
+			word = "HOME";
+		}
+		else if(key == KeyEvent.VK_END) {
+			word = "END";
+		}
+		else if(key == KeyEvent.VK_PAGE_UP) {
+			word = "PG_UP";
+		}
+		else if(key == KeyEvent.VK_PAGE_DOWN) {
+			word = "PG_DOWN";
+		}
+		
+		
+		//특수키
+		else if(key == KeyEvent.VK_CAPS_LOCK) {
+			word = "CAPS_LOCK";
+		}
+		else if(key == KeyEvent.VK_NUM_LOCK) {
+			word = "NUM_LOCK";
+		}
+		else if(key == KeyEvent.VK_SCROLL_LOCK) {
+			word = "SCROLL_LOCK";
+		}
+		else if(key == KeyEvent.VK_PRINTSCREEN) {
+			word = "PRINTSCREEN";
+		}
+		else if(key == KeyEvent.VK_PAUSE) {
+			word = "PAUSE";
+		}
+		else if(key == KeyEvent.VK_WINDOWS) {
+			word = "WINDOWS";
+		}
+		else if(key == KeyEvent.VK_CONTEXT_MENU) {
+			word = "MENU";
+		}
+		
+		//그외의 일반키들은 char로 바꾸기.
+		
+		else {
+			word = "" + (char)key;
+		}
+		
+		return word;
+	}
 	
 	
 	
@@ -241,15 +369,31 @@ public class Setting {
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		g2.drawString("keysetting", x, y);
 		
+		//키세팅용 첫번째 줄
 		y = GamePanel.HEIGHT / 13 * 5 ;
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 25 + 25 * GamePanel.SIZE));
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
 		for(int i = 0; i <= 4; i++) {
-			g2.setColor((pointer_y == 1 && pointer_x == i) ? Color.yellow : Color.white);
-			g2.drawString("", x, y);
+			
+			//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
+			//값변경 없으면 하얀색. 값변경 있으면 초록색
+			g2.setColor((pointer_y == 1 && pointer_x == i) ? (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.white : Color.green));
+			g2.drawString(whatisKey(GamePanel.userkeySetting[i]), x, y);
 			
 			x += GamePanel.WIDTH / 8;
 		}
 		
+		//키세팅용 두번째 줄
+		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
+		y = GamePanel.HEIGHT / 2;
+		for(int i = 0; i <= 4; i++) {
+			
+			//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
+			//값변경 없으면 하얀색. 값변경 있으면 초록색
+			g2.setColor((pointer_y == 2 && pointer_x == i) ? (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.white : Color.green));
+			g2.drawString(whatisKey(GamePanel.userkeySetting[i + 5]), x, y);
+			
+			x += GamePanel.WIDTH / 8;
+		}
 		
 		
 		//확인용 2

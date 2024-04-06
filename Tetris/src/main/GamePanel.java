@@ -78,7 +78,12 @@ public class GamePanel extends JPanel implements Runnable {
             	
             	i++;
             }
-            userkeySetting = keySetting;
+            
+            for(i = 0; i < 10 ; i++) {
+            	userkeySetting[i] = keySetting[i];
+            }
+            
+            //userkeySetting = keySetting;
             
         } catch (IOException e) {
         	
@@ -88,7 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
         //확인용
         //System.out.println("=================="); // 줄 바꿈
 		
-        /*
+        
 		keySetting_Origin[0] = KeyEvent.VK_UP;
 		keySetting_Origin[1] = KeyEvent.VK_DOWN;
 		keySetting_Origin[2] = KeyEvent.VK_LEFT;
@@ -100,7 +105,7 @@ public class GamePanel extends JPanel implements Runnable {
 		keySetting_Origin[8] = KeyEvent.VK_ESCAPE; //메뉴
 		keySetting_Origin[9] = KeyEvent.VK_ENTER; //확인
 		
-        */
+        
 	}
 	
 	//점수기입용
