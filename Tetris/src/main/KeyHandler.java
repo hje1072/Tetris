@@ -6,18 +6,22 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener{
 	
 	public static boolean upPressed, downPressed, leftPressed, rightPressed, pausePressed,
-		quitPressed, enterPressed, menuPressed, fallPressed;
-	
+		quitPressed, enterPressed, menuPressed, fallPressed, turnPressed;
 	
 	
 	
 	@Override // 이거 당장은 안쓸거임
 	public void keyTyped(KeyEvent e) {} 
 	
+	//누르면 실행됨
 	@Override
 	public void keyPressed(KeyEvent e) {
 		
 		int code = e.getKeyCode();
+		
+		if (GamePanel.userKeyset) {GamePanel.userKey = code;}
+		
+		System.out.println(GamePanel.userKey);//디버깅용
 		
 		//이건 기본값넣었음 기본값은 주석처리된 곳에 써있는 것.
 		
@@ -38,18 +42,23 @@ public class KeyHandler implements KeyListener{
 			rightPressed = true;
 		}
 		
-		//q버튼 종료버튼
+		
 		if (code == GamePanel.keySetting[4]) {
+			turnPressed = true;
+		}
+		
+		//q버튼 종료버튼
+		if (code == GamePanel.keySetting[5]) {
 			quitPressed = true;
 		}
 		
 		//스페이스바 버튼
-		if (code == GamePanel.keySetting[5]) {
+		if (code == GamePanel.keySetting[6]) {
 			fallPressed = true;
 		}
 		
 		//퍼즈버튼 누를 때 마다 퍼즈됐다 풀렸다, 할 수 있다.
-		if (code == GamePanel.keySetting[6]) {
+		if (code == GamePanel.keySetting[7]) {
 			if(pausePressed) {
 				pausePressed = false;
 			}
@@ -59,12 +68,12 @@ public class KeyHandler implements KeyListener{
 		}
 		
 		//esc 눌렀을 때, 메뉴로.
-		if (code == GamePanel.keySetting[7]) {
+		if (code == GamePanel.keySetting[8]) {
 			menuPressed = true;
 		}
 		
 		//엔터받기용
-		if (code == GamePanel.keySetting[8]) {
+		if (code == GamePanel.keySetting[9]) {
 			enterPressed = true;
 		}
 		
@@ -78,6 +87,10 @@ public class KeyHandler implements KeyListener{
 	
 	//키값오류 잡아주는 용도 //선입력방지용
 	public static void keyCheck() {
+		
+		if(KeyHandler.turnPressed) {
+			KeyHandler.turnPressed = false; //돌리기버튼 초기화
+		}
 		
 		if(KeyHandler.quitPressed) {
 			KeyHandler.quitPressed = false; //메인메뉴는 q안눌러도 나가는 키 만듦 만약 qpressed 상태일시 초기화.

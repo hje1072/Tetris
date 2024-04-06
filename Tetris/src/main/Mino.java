@@ -203,7 +203,7 @@ public class Mino {
 		}
 		
 		//블록 움직이기
-		if(KeyHandler.upPressed) {
+		if(KeyHandler.turnPressed) {
 			switch(direction) {
 			
 			case 1 : getDirection2(); break;
@@ -212,7 +212,7 @@ public class Mino {
 			case 4 : getDirection1(); break;
 			}
 			
-			KeyHandler.upPressed = false;
+			KeyHandler.turnPressed = false;
 			
 		}
 		

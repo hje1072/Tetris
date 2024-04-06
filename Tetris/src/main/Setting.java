@@ -16,10 +16,6 @@ public class Setting {
 	public int pointer_x = 0;
 	
 	
-	
-	
-	
-	
 	public void keySet() {
 		
 		//키세팅저장csv파일 불러오기.
@@ -53,11 +49,8 @@ public class Setting {
 	}
 	
 	
-	
-	
-	
-	
-	public void update() {
+	//키보드로 입력받는 거 핸들링하는 곳.
+	public void keyHandling() {
 		
 		//방향키조작용
 		if (KeyHandler.downPressed == true) {
@@ -74,9 +67,11 @@ public class Setting {
 			}
 			KeyHandler.upPressed = false;
 		}
+		
+		
 		if (KeyHandler.rightPressed == true) {
 			pointer_x += 1;
-			if (pointer_x >= 3 ) {
+			if (pointer_x >= 5 ) {
 				pointer_x = 0;
 			}
 			KeyHandler.rightPressed = false;
@@ -84,10 +79,11 @@ public class Setting {
 		if (KeyHandler.leftPressed == true) {
 			pointer_x -= 1;
 			if (pointer_x < 0) {
-				pointer_x = 3;
+				pointer_x = 4;
 			}
 			KeyHandler.leftPressed = false;
 		}
+		
 		
 		if(KeyHandler.menuPressed) {
 			GamePanel.screen = 0;
@@ -100,6 +96,8 @@ public class Setting {
 			KeyHandler.enterPressed = false;
 			
 			switch(pointer_y) {
+			
+			
 			case 0 :  //해상도
 				switch(pointer_x) {
 				case 0 :
@@ -122,34 +120,34 @@ public class Setting {
 					break;
 				}
 				break;
+				
+				
 			case 1 : //키보드설정1
 				
-				switch(pointer_x) {
-				case 0 :
-					keySet();
-					//0 = 돌리기
-					break;
-				case 1 :
-					// 1 = 내리기
-					break;
-				case 2 : 
-					//2 = 왼쪽
-					break;
-				case 3 : 
-					//3 = 오른쪽
-					break;
-				}
-				
-				
-				
+				GamePanel.userKeyset =true;
 				break;
-			case 2 : //키보드 설정 2
-			
+			case 2 : //키보드 설정2
+				
+				GamePanel.userKeyset =true;
 				break;
 			
 			case 3 : //키보드 세팅 변경 확인용도.
-				break;
 				
+				switch(pointer_x) {
+				case 0 :
+					
+					//accept
+					break;
+				case 1 :
+					
+					//reject
+					break;
+				}
+				
+				break;
+			
+			
+			
 			case 4 : //색맹모드
 				
 				break;
@@ -157,11 +155,47 @@ public class Setting {
 				
 				
 				break;
-			
+			case 6 : //기본값으로 초기화.
+				GamePanel.SIZE = 1;
+				GamePanel.sizeChange = true;
+				
+				
+				
 			}
 		
 		}
+		
+	}
 	
+	
+	
+	
+	public void update() {
+		
+		if (GamePanel.userKeyset) {
+			//System.out.println(GamePanel.userKey);
+			
+			if(GamePanel.userKey != 0) {
+				
+				System.out.println(GamePanel.userKey); //디버깅용
+				GamePanel.userkeySetting[(pointer_y - 1) * 5 + pointer_x] = GamePanel.userKey;
+				
+				//얘도 디버깅용
+				System.out.println("---------");
+				for (int i = 0 ; i < 10 ; i++) {
+					
+					System.out.println(GamePanel.userkeySetting[i]);
+				}
+				
+				GamePanel.userKey = 0;
+				GamePanel.userKeyset = false;
+			}
+			
+		}
+		
+		else {
+			keyHandling();
+		}
 	}
 	
 	public void draw(Graphics2D g2) {
@@ -184,7 +218,7 @@ public class Setting {
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("resolution", x, y);
+		g2.drawString("screen size", x, y);
 		
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor((pointer_y == 0 && pointer_x == 0) ? Color.yellow : Color.white);
@@ -193,13 +227,29 @@ public class Setting {
 		
 		x = GamePanel.WIDTH * 5 / 13;
 		g2.setColor((pointer_y == 0 && pointer_x == 1) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("middle", x + 5 + 5 * GamePanel.SIZE , y);
 		
 		x = GamePanel.WIDTH * 2 / 3;
 		g2.setColor((pointer_y == 0 && pointer_x == 2) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
 		g2.drawString("large", x + 5 + 5 * GamePanel.SIZE , y);
+		
+		
+		//키세팅 그리기
+		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
+		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 15;
+		g2.setColor(Color.white);
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
+		g2.drawString("keysetting", x, y);
+		
+		y = GamePanel.HEIGHT / 13 * 5 ;
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 25 + 25 * GamePanel.SIZE));
+		for(int i = 0; i <= 4; i++) {
+			g2.setColor((pointer_y == 1 && pointer_x == i) ? Color.yellow : Color.white);
+			g2.drawString("", x, y);
+			
+			x += GamePanel.WIDTH / 8;
+		}
+		
 		
 		
 		//확인용 2

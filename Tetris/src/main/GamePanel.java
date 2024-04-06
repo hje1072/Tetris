@@ -44,8 +44,20 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//키보드세팅용도
 	public static int keySetting[] = new int[10];
-	//0 = 돌리기, 1 = 내리기, 2 = 왼쪽, 3 = 오른쪽, 4 = 게임중 종료
-	//5 = 즉시낙하, 6 = 퍼즈, 7 = 메뉴, 8 = 선택, 9 = 취소
+	//0 = 위, 1 = 아래, 2 = 왼쪽, 3 = 오른쪽, 4 = 돌리기
+	//5 = 게임중 종료, 6 = 즉시낙하, 7 = 퍼즈, 8 = 메뉴, 9 = 확인
+	
+	//기본값용도
+	public static int keySetting_Origin[] = new int[10];
+	
+	
+	
+	//유저키세팅 받는거 확인용도
+	public static int userkeySetting[] = new int[10];
+	
+	public static boolean userKeyset = false;
+	public static int userKey = 0;
+	
 	
 	public void keySetting() {
 		
@@ -66,6 +78,8 @@ public class GamePanel extends JPanel implements Runnable {
             	
             	i++;
             }
+            userkeySetting = keySetting;
+            
         } catch (IOException e) {
         	
             e.printStackTrace();
@@ -75,16 +89,16 @@ public class GamePanel extends JPanel implements Runnable {
         //System.out.println("=================="); // 줄 바꿈
 		
         /*
-		keySetting[0] = KeyEvent.VK_UP;
-		keySetting[1] = KeyEvent.VK_DOWN;
-		keySetting[2] = KeyEvent.VK_LEFT;
-		keySetting[3] = KeyEvent.VK_RIGHT;
-		keySetting[4] = KeyEvent.VK_Q;
-		keySetting[5] = KeyEvent.VK_SPACE;
-		keySetting[6] = KeyEvent.VK_P;
-		keySetting[7] = KeyEvent.VK_ESCAPE;
-		keySetting[8] = KeyEvent.VK_ENTER;
-		keySetting[9] = KeyEvent.VK_BACK_SPACE;
+		keySetting_Origin[0] = KeyEvent.VK_UP;
+		keySetting_Origin[1] = KeyEvent.VK_DOWN;
+		keySetting_Origin[2] = KeyEvent.VK_LEFT;
+		keySetting_Origin[3] = KeyEvent.VK_RIGHT;
+		keySetting_Origin[4] = KeyEvent.VK_UP; //돌리기
+		keySetting_Origin[5] = KeyEvent.VK_Q; //종료
+		keySetting_Origin[6] = KeyEvent.VK_SPACE; //한번에 쾅
+		keySetting_Origin[7] = KeyEvent.VK_P; //퍼즈
+		keySetting_Origin[8] = KeyEvent.VK_ESCAPE; //메뉴
+		keySetting_Origin[9] = KeyEvent.VK_ENTER; //확인
 		
         */
 	}
@@ -108,6 +122,20 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//기본키세팅 설정
 		keySetting();
+		
+		//디폴트값용 키세팅
+		keySetting_Origin[0] = KeyEvent.VK_UP;
+		keySetting_Origin[1] = KeyEvent.VK_DOWN;
+		keySetting_Origin[2] = KeyEvent.VK_LEFT;
+		keySetting_Origin[3] = KeyEvent.VK_RIGHT;
+		keySetting_Origin[4] = KeyEvent.VK_UP; //돌리기
+		
+		keySetting_Origin[5] = KeyEvent.VK_Q; //종료
+		keySetting_Origin[6] = KeyEvent.VK_SPACE; //한번에 쾅
+		keySetting_Origin[7] = KeyEvent.VK_P; //퍼즈
+		keySetting_Origin[8] = KeyEvent.VK_ESCAPE; //메뉴
+		keySetting_Origin[9] = KeyEvent.VK_ENTER; //확인
+		
 		
 		pm = new PlayManager();
 		mn = new Menu();
