@@ -20,6 +20,25 @@ public class Setting {
 	
 	public boolean keyChange = false;
 	
+	
+	//사이즈저장용
+	public void sizeSet(int size) {
+		
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/size.csv";
+		
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
+            // CSV 파일에 데이터 쓰기
+            writer.println(size); // 헤더
+            
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+	}
+	
+	
+	//키세팅용
 	//뒤에꺼를 앞에다 넣을꺼임
 	public void keySet(int[] keySetAfter, int[] keySetBefore) {
 		for(int i = 0; i < keySetBefore.length ; i++) {
@@ -245,18 +264,21 @@ public class Setting {
 					// 640 * 480
 					GamePanel.SIZE = 0;
 					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
 					
 					break;
 				case 1 : //디폴트값.
 					// 1280 * 720
 					GamePanel.SIZE = 1;
 					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
 					
 					break;
 				case 2 : 
 					//1920 * 1080
 					GamePanel.SIZE = 2;
 					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
 					
 					break;
 				}
@@ -303,6 +325,7 @@ public class Setting {
 			case 6 : //기본값으로 초기화.
 				GamePanel.SIZE = 1;
 				GamePanel.sizeChange = true;
+				sizeSet(GamePanel.SIZE);
 				
 				//기본 키보드값으로 초기화.
 				keySet(GamePanel.keySetting, GamePanel.keySetting_Origin);
