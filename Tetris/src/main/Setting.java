@@ -491,7 +491,6 @@ public class Setting {
 	public void update() {
 		
 		if (GamePanel.userKeyset) {
-			//System.out.println(GamePanel.userKey);
 			
 			usertempKey();
 			

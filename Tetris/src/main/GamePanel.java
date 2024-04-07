@@ -127,6 +127,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//사이즈설정.
 		SIZE = readSize();
+		blockSize = 20 + 10 * SIZE;
+		Block.SIZE = blockSize;
 		WIDTH = 640 + 640 * SIZE;
 		HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
 		
@@ -163,11 +165,6 @@ public class GamePanel extends JPanel implements Runnable {
 		st = new Setting();
 	}
 	
-	public void asdf() {
-		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		this.setBackground(Color.black);
-		this.setLayout(null);
-	}
 	
 	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
 	public void launchGame() {
