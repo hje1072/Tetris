@@ -21,7 +21,6 @@ public class KeyHandler implements KeyListener{
 		
 		if (GamePanel.userKeyset) {GamePanel.userKey = code;}
 		
-		System.out.println(GamePanel.userKey);//디버깅용
 		
 		//이건 기본값넣었음 기본값은 주석처리된 곳에 써있는 것.
 		
@@ -29,13 +28,13 @@ public class KeyHandler implements KeyListener{
 		if (code == GamePanel.keySetting[0]) {
 			upPressed = true;
 		}
-		//아래
-		if (code == GamePanel.keySetting[1]) {
-			downPressed = true;
-		}
 		//왼쪽
-		if (code == GamePanel.keySetting[2]) {
+		if (code == GamePanel.keySetting[1]) {
 			leftPressed = true;
+		}
+		//아래
+		if (code == GamePanel.keySetting[2]) {
+			downPressed = true;
 		}
 		//오른쪽
 		if (code == GamePanel.keySetting[3]) {
@@ -58,7 +57,7 @@ public class KeyHandler implements KeyListener{
 		}
 		
 		//퍼즈버튼 누를 때 마다 퍼즈됐다 풀렸다, 할 수 있다.
-		if (code == GamePanel.keySetting[7]) {
+		if (code == GamePanel.keySetting[7] && GamePanel.screen == 1) {
 			if(pausePressed) {
 				pausePressed = false;
 			}

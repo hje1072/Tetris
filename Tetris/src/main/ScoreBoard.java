@@ -85,6 +85,7 @@ public class ScoreBoard {
 		}
 	}
 	
+	
 	//업데이트 필요시 이 메소드 호출바람.
 	public void readscoreBoard() {
 		

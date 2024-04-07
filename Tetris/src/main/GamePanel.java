@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//키보드세팅용도
 	public static int keySetting[] = new int[10];
-	//0 = 위, 1 = 아래, 2 = 왼쪽, 3 = 오른쪽, 4 = 돌리기
+	//0 = 위, 1 = 왼쪽, 2 = 중간, 3 = 오른쪽, 4 = 돌리기
 	//5 = 게임중 종료, 6 = 즉시낙하, 7 = 퍼즈, 8 = 메뉴, 9 = 확인
 	
 	//기본값용도
@@ -94,17 +94,6 @@ public class GamePanel extends JPanel implements Runnable {
         //System.out.println("=================="); // 줄 바꿈
 		
         
-		keySetting_Origin[0] = KeyEvent.VK_UP;
-		keySetting_Origin[1] = KeyEvent.VK_DOWN;
-		keySetting_Origin[2] = KeyEvent.VK_LEFT;
-		keySetting_Origin[3] = KeyEvent.VK_RIGHT;
-		keySetting_Origin[4] = KeyEvent.VK_UP; //돌리기
-		keySetting_Origin[5] = KeyEvent.VK_Q; //종료
-		keySetting_Origin[6] = KeyEvent.VK_SPACE; //한번에 쾅
-		keySetting_Origin[7] = KeyEvent.VK_P; //퍼즈
-		keySetting_Origin[8] = KeyEvent.VK_ESCAPE; //메뉴
-		keySetting_Origin[9] = KeyEvent.VK_ENTER; //확인
-		
         
 	}
 	
@@ -130,8 +119,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//디폴트값용 키세팅
 		keySetting_Origin[0] = KeyEvent.VK_UP;
-		keySetting_Origin[1] = KeyEvent.VK_DOWN;
-		keySetting_Origin[2] = KeyEvent.VK_LEFT;
+		keySetting_Origin[1] = KeyEvent.VK_LEFT;
+		keySetting_Origin[2] = KeyEvent.VK_DOWN;
 		keySetting_Origin[3] = KeyEvent.VK_RIGHT;
 		keySetting_Origin[4] = KeyEvent.VK_UP; //돌리기
 		
@@ -239,7 +228,8 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		case 0 : //메인메뉴
 			mn.update();
-			KeyHandler.keyCheck(); break;
+			KeyHandler.keyCheck();
+			break;
 		
 		case 1 : //게임화면
 			
