@@ -58,7 +58,27 @@ public class GamePanel extends JPanel implements Runnable {
 	public static boolean userKeyset = false;
 	public static int userKey = 0;
 	
+	//해상도 불러오기
+	public int readSize() {
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/size.csv";
+        String num = "";
+        int size = 1;
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	num = br.readLine();
+            size = Integer.parseInt(num);
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        return size;
+	}
 	
+	
+	//저장해놓은 키설정 불러오기
 	public void keySetting() {
 		
 		//키세팅저장csv파일 불러오기.
@@ -105,6 +125,11 @@ public class GamePanel extends JPanel implements Runnable {
 	//생성자.
 	public GamePanel() {
 		
+		//사이즈설정.
+		SIZE = readSize();
+		WIDTH = 640 + 640 * SIZE;
+		HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+		
 		//윈도우창 세팅
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		this.setBackground(Color.black);
@@ -113,6 +138,7 @@ public class GamePanel extends JPanel implements Runnable {
 		//키보드입력값 받아주기 세팅
 		this.addKeyListener(new KeyHandler());
 		this.setFocusable(true);
+		
 		
 		//기본키세팅 설정
 		keySetting();
