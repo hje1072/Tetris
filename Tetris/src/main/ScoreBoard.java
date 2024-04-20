@@ -63,31 +63,22 @@ public class ScoreBoard {
 		
 		//스코어보드는 눈으로만 볼 수 있게 만듦.
 		//확인후 나가는 키만 확실히 표현하면 될듯.
-		if (KeyHandler.enterPressed == true) {
+		if (KeyHandler.enterPressed == true || KeyHandler.menuPressed == true) {
 			
 			if (newRecord) {newRecord = false;} //신기록 하이라이트용 변수 꺼주기
 			
 			KeyHandler.enterPressed = false;
+			KeyHandler.menuPressed = false;
 			GamePanel.screenRefresh = true;
 			GamePanel.screen = 0; //메인메뉴로
 		}
 		
-		if(KeyHandler.menuPressed) {
-			
-			//점수보드 초기화 예시
-			removescoreBoard();
-			readscoreBoard();
-			
-			//GamePanel.screen = 0;
-			
-			KeyHandler.menuPressed = false;
-			GamePanel.screenRefresh = true;
-		}
+		
 	}
 	
 	
 	//업데이트 필요시 이 메소드 호출바람.
-	public void readscoreBoard() {
+	public static void readscoreBoard() {
 		
     	//파일을 읽어오는 과정.
     	
@@ -192,7 +183,8 @@ public class ScoreBoard {
         
 	}
 	
-	public void removescoreBoard() {
+	//스코어정보초기화용
+	public static void removescoreBoard() {
 		
     	String currentDirectory = System.getProperty("user.dir");
         String csvFile = currentDirectory + "/src/data/scoreBoard.csv";
@@ -280,6 +272,7 @@ public class ScoreBoard {
 		
 		g2.drawString(Name[0], x, y); g2.drawString(Score[0], x + GamePanel.WIDTH * 1 / 3, y); 
 		
+		g2.setFont(new Font("맑은고딕", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		g2.setColor(Color.white);
 		for(int k = 1 ; k <= 10 ; k++) {
 			y += GamePanel.HEIGHT / 14;

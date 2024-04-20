@@ -15,11 +15,14 @@ import java.io.PrintWriter;
 //공사중
 public class Setting {
 	
+	
+	//현재 pointer_y == 4 에 해당하는 부분은 비워놨음. 만일을 위한 키세팅 추가가 있을까봐 그런거니까 알아두셈.
 	public int pointer_y = 0;
 	public int pointer_x = 0;
 	
 	public boolean keyChange = false;
-	
+	boolean def_Reset = false;
+	boolean score_Reset = false;
 	
 	//사이즈저장용
 	public void sizeSet(int size) {
@@ -83,173 +86,51 @@ public class Setting {
 		
 		//방향키조작용
 		
-		//아래쪽
-		if (KeyHandler.downPressed == true) {
-			pointer_y += 1;
-			if (pointer_y >= 7 ) {
-				pointer_y = 0;
-			}
+		if(def_Reset || score_Reset) {
+			//오른쪽
+			rightPress();
 			
-			//y값에 따른 x값 조정
-			switch(pointer_y) {
+			//왼쪽
+			leftPress();
 			
-			case 0 : //해상도 섹션은 x값이 3개임
-				// 2 -> 3
-				
-				pointer_x = (int)(pointer_x / 2);
-				System.out.println("나 x인데 :"+ pointer_x);
-				
-				break;
-			case 1 : //키보드 섹션은 x값이 5개임
-				// 3 -> 5
-				
-				pointer_x = (int)(pointer_x * 2) ;
-				
-				break;
-			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
-				
-				break;
-			case 3 : //키보드사설키 변경 accept or reject 하는 구간
-				//키변화가 있을 때에만 접근가능.
-				if(keyChange) {
-					
-				}
-				else {
-					pointer_y += 1;
-				}
-				if (pointer_x >= 2 ) {
-					pointer_x = 0;
-				}
-				
-				break;
-			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				pointer_x = 0;
-				
-				break;
-			}
+			//확인버튼
+			enterPress();
+		}
+		else {
+			//아래
+			downPress();
+			
+			//위쪽
+			upPress();
 			
 			
+			//오른쪽
+			rightPress();
 			
-			KeyHandler.downPressed = false;
+			//왼쪽
+			leftPress();
+			
+			//확인버튼
+			enterPress();
 		}
 		
-		//위쪽
-		if (KeyHandler.upPressed == true) {
-			pointer_y -= 1;
-			if (pointer_y < 0) {
-				pointer_y = 6;
-			}
-			
-			//y값에 따른 x값 조정
-			switch(pointer_y) {
-			
-			case 0 : //해상도 섹션은 x값이 3개임
-				//5 -> 3 이라 줄여줌
-				
-				pointer_x = (int)(pointer_x / 2);
-				
-				break;
-			case 1 : //키보드 섹션은 x값이 5개임
-				//5 -> 5 개라 x값 변화 x
-				
-				break;
-			case 2 : //키보드 섹션은 x값 5개임
-				//2 -> 5 개라 변화시켜줌
-				
-				pointer_x = 4;
-				
-				break;
-			case 3 : //키보드사설키 변경 accept or reject 하는 구간
-				//키변화가 있을 때에만 접근가능.
-				if(keyChange) {
-					pointer_x = 0;
-				}
-				else {
-					pointer_y -= 1;
-					pointer_x = 4;
-				}
-				
-				break;
-			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				if (pointer_x >= 2 ) {
-					pointer_x = 1;
-				}
-				break;
-			}
-			
-			KeyHandler.upPressed = false;
-		}
-		
-		
-		if (KeyHandler.rightPressed == true) {
-			pointer_x += 1;
-			
-			switch(pointer_y) {
-			
-			case 0 : //해상도 섹션은 x값이 3개임
-				
-				if (pointer_x >= 3 ) {
-					pointer_x = 0;
-				}
-				break;
-			case 1 : //키보드 섹션은 x값이 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
-				break;
-			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
-				break;
-			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				if (pointer_x >= 2 ) {
-					pointer_x = 0;
-				}
-				break;
-			}
-			
-			KeyHandler.rightPressed = false;
-		}
-		if (KeyHandler.leftPressed == true) {
-			pointer_x -= 1;
-			
-			switch(pointer_y) {
-			
-			case 0 : //해상도 섹션은 x값이 3개임
-				
-				if (pointer_x < 0) {
-					pointer_x = 2;
-				}
-				break;
-			case 1 : //키보드 섹션은 x값이 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
-				break;
-			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
-				break;
-			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				if (pointer_x < 0) {
-					pointer_x = 1;
-				}
-				break;
-			}
-			KeyHandler.leftPressed = false;
-		}
-		
-		
+		//메뉴로가기
 		if(KeyHandler.menuPressed) {
+			def_Reset = false;
+			score_Reset = false;
+			pointer_x = 0; pointer_y = 0;
+			
 			GamePanel.screen = 0;
 			
 			KeyHandler.menuPressed = false;
 		}
+		
+		
+		
+	}
+	
+	//확인버튼
+	private void enterPress() {
 		
 		//수정필요
 		if (KeyHandler.enterPressed == true) {
@@ -315,21 +196,56 @@ public class Setting {
 			
 			
 			
-			case 4 : //색맹모드
+			case 5 : //색맹모드
 				
 				break;
-			case 5 : //스크어보드초기화.
 				
+			case 6 : //스코어보드초기화.
+				
+				if (score_Reset) {
+					switch(pointer_x) {
+					case 0 :
+						score_Reset = false;
+						
+						ScoreBoard.removescoreBoard();
+						ScoreBoard.readscoreBoard();
+						break;
+					case 1 :
+						score_Reset = false;
+					} 
+				}
+				
+				else {
+					score_Reset = true;
+				}
 				
 				break;
-			case 6 : //기본값으로 초기화.
-				GamePanel.SIZE = 1;
-				GamePanel.sizeChange = true;
-				sizeSet(GamePanel.SIZE);
+			
+			case 7 : //기본값으로 초기화.
+				if (def_Reset) {
+					switch(pointer_x) {
+					case 0 :
+						def_Reset = false;
+						GamePanel.SIZE = 1;
+						GamePanel.sizeChange = true;
+						sizeSet(GamePanel.SIZE);
+						
+						//기본 키보드값으로 초기화.
+						keySet(GamePanel.keySetting, GamePanel.keySetting_Origin);
+						keySet(GamePanel.userkeySetting, GamePanel.keySetting);
+						
+						break;
+					case 1 :
+						def_Reset = false;
+					}
+					
+					def_Reset = false;
+				}
 				
-				//기본 키보드값으로 초기화.
-				keySet(GamePanel.keySetting, GamePanel.keySetting_Origin);
-				keySet(GamePanel.userkeySetting, GamePanel.keySetting);
+				else {
+					def_Reset = true;
+				}
+				
 				
 				
 			}
@@ -337,7 +253,207 @@ public class Setting {
 		}
 		
 	}
-	
+
+
+	//왼쪽
+	private void leftPress() {
+		if (KeyHandler.leftPressed == true) {
+			pointer_x -= 1;
+			
+			switch(pointer_y) {
+			
+			case 0 : //해상도 섹션은 x값이 3개임
+				
+				if (pointer_x < 0) {
+					pointer_x = 2;
+				}
+				break;
+			case 1 : //키보드 섹션은 x값이 5개임
+				if (pointer_x < 0) {
+					pointer_x = 4;
+				}
+				break;
+			case 2 : //키보드 섹션은 x값 5개임
+				if (pointer_x < 0) {
+					pointer_x = 4;
+				}
+				break;
+			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
+				if (pointer_x < 0) {
+					pointer_x = 1;
+				}
+				break;
+			}
+			KeyHandler.leftPressed = false;
+		}
+	}
+
+
+	//오른쪽
+	private void rightPress() {
+		
+		if (KeyHandler.rightPressed == true) {
+			pointer_x += 1;
+			
+			switch(pointer_y) {
+			
+			case 0 : //해상도 섹션은 x값이 3개임
+				
+				if (pointer_x >= 3 ) {
+					pointer_x = 0;
+				}
+				break;
+			case 1 : //키보드 섹션은 x값이 5개임
+				if (pointer_x >= 5 ) {
+					pointer_x = 0;
+				}
+				break;
+			case 2 : //키보드 섹션은 x값 5개임
+				if (pointer_x >= 5 ) {
+					pointer_x = 0;
+				}
+				break;
+			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
+				if (pointer_x >= 2 ) {
+					pointer_x = 0;
+				}
+				break;
+			}
+			
+			KeyHandler.rightPressed = false;
+		}
+	}
+
+	//위
+	private void upPress() {
+		if (KeyHandler.upPressed == true) {
+			pointer_y -= 1;
+			if (pointer_y < 0) {
+				pointer_y = 7;
+			}
+			
+			//y값에 따른 x값 조정
+			switch(pointer_y) {
+			
+			case 0 : //해상도 섹션은 x값이 3개임
+				//5 -> 3 이라 줄여줌
+				
+				pointer_x = (int)(pointer_x / 2);
+				
+				break;
+			case 1 : //키보드 섹션은 x값이 5개임
+				//5 -> 5 개라 x값 변화 x
+				
+				break;
+			case 2 : //키보드 섹션은 x값 5개임
+				//2 -> 5 개라 변화시켜줌
+				
+				pointer_x = 4;
+				
+				break;
+			case 3 : //키보드사설키 변경 accept or reject 하는 구간
+				//키변화가 있을 때에만 접근가능.
+				if(keyChange) {
+					pointer_x = 0;
+				}
+				else {
+					pointer_y -= 1;
+					pointer_x = 4;
+				}
+				
+				break;
+				
+			case 4 : // 만약 추가 키세팅 더 생길까봐 비워놨음  추후 생기면 바꾸셈.
+				//키변화가 있을 때에만 접근가능.
+				if(keyChange) {
+					pointer_y -= 1;
+					pointer_x = 0;
+				}
+				else {
+					pointer_y -= 2;
+					pointer_x = 4;
+				}
+				
+				break;
+				
+				
+			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
+				if (pointer_x >= 2 ) {
+					pointer_x = 1;
+				}
+				break;
+			}
+			
+			KeyHandler.upPressed = false;
+		}
+		
+	}
+
+	//아래
+	private void downPress() {
+		//아래쪽
+		if (KeyHandler.downPressed == true) {
+			pointer_y += 1;
+			if (pointer_y >= 8 ) {
+				pointer_y = 0;
+			}
+			
+			//y값에 따른 x값 조정
+			switch(pointer_y) {
+			
+			case 0 : //해상도 섹션은 x값이 3개임
+				// 2 -> 3
+				
+				pointer_x = (int)(pointer_x / 2);
+				//System.out.println("나 x인데 :"+ pointer_x);
+				
+				break;
+			case 1 : //키보드 섹션은 x값이 5개임
+				// 3 -> 5
+				
+				pointer_x = (int)(pointer_x * 2) ;
+				
+				break;
+			case 2 : //키보드 섹션은 x값 5개임
+				if (pointer_x >= 5 ) {
+					pointer_x = 0;
+				}
+				
+				break;
+			case 3 : //키보드사설키 변경 accept or reject 하는 구간
+				//키변화가 있을 때에만 접근가능.
+				if(keyChange) {
+					
+				}
+				else {
+					pointer_y += 2;
+				}
+				if (pointer_x >= 2 ) {
+					pointer_x = 0;
+				}
+				
+				break;
+			
+			case 4 : //나중에 쓸 수 있을 까봐 만들어 놓은거 알아두기.
+				
+				pointer_y -= 1;
+				
+				break;
+			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
+				pointer_x = 0;
+				
+				break;
+			}
+			
+			
+			
+			KeyHandler.downPressed = false;
+		}
+		
+	}
+
+
+	//일시적인 키저장. 적용할지 말지 결정가능.
 	public void usertempKey() {
 		if(GamePanel.userKey != 0) {
 			
@@ -637,12 +753,48 @@ public class Setting {
 		int x;
 		int y;
 		
+		//색맹모드
+		x = GamePanel.WIDTH / 8;
+		y = GamePanel.HEIGHT / 8;
+		
+		x += 5 + 5 * GamePanel.SIZE;
+		y += GamePanel.HEIGHT / 15;
+		g2.setColor(Color.white);
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
+		g2.drawString("Color Blind Mode", x, y);
+		
+		//색맹모드 apply cancel 용도
+		x += GamePanel.WIDTH / 8 * 4;
+		
+		g2.setColor((pointer_x == 0 && pointer_y == 5) ? Color.yellow :Color.white);
+		g2.drawString("On", x, y);
+		
+		g2.setColor((pointer_x == 1 && pointer_y == 5) ? Color.yellow :Color.white);		
+		g2.drawString("Off", x + GamePanel.WIDTH / 8, y);
+		
+		
+		//스코어보드 초기화용
+		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
+		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 15;
+		
+		y += GamePanel.HEIGHT / 15;
+		g2.setColor(Color.white);
+		g2.drawString("ScoreBoard Reset", x, y);
+		
+		
+		x += GamePanel.WIDTH / 8 * 4;
+		g2.setColor(pointer_y == 6 ? Color.yellow :Color.white);
+		g2.drawString("Reset", x + GamePanel.WIDTH / 8, y);
+		
+		
+		
+		
 		//임시 default용
-		x = GamePanel.WIDTH / 2;
-		y = GamePanel.HEIGHT / 2;
-		g2.setColor((pointer_y == 6)? Color.red : Color.gray);
+		x = GamePanel.WIDTH / 5;
+		y = GamePanel.HEIGHT / 4 * 3;
+		g2.setColor((pointer_y == 7)? Color.red : Color.gray);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 40 + 40 * GamePanel.SIZE));
-		g2.drawString("All Reset!!!", x, y);
+		g2.drawString("Default Initialization!!!", x, y);
 		
 		//확인용 2
 		x = PlayManager.left_x;
@@ -650,6 +802,55 @@ public class Setting {
 		g2.setColor(Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		g2.drawString("height:"+pointer_y+" // and width:" + pointer_x, x, y);
+		
+		
+		//초기화 시 확인용
+		if(score_Reset) {
+			 x = GamePanel.WIDTH * 1/ 3;
+			 y = GamePanel.HEIGHT * 1/ 3;
+			
+			g2.setColor(Color.black);
+			g2.setStroke(new BasicStroke(4f)); //테두리크기 4픽셀이라는 뜻
+			g2.fillRect(x, y, GamePanel.WIDTH * 1/ 3, GamePanel.HEIGHT * 1 / 3); 
+			
+			g2.setColor(Color.yellow);
+			g2.drawRect(x, y, GamePanel.WIDTH * 1/ 3, GamePanel.HEIGHT * 1 / 3);
+			
+			x += 5 + 5 * GamePanel.SIZE + GamePanel.WIDTH / 16;
+			g2.setColor(Color.white);
+			g2.drawString("Are you Sure?", x, y + GamePanel.HEIGHT / 15);
+			
+			g2.setColor((pointer_x == 0) ? Color.yellow :Color.white);
+			g2.drawString("Yes", x + GamePanel.WIDTH / 32, y + GamePanel.HEIGHT * 1 / 5);
+			
+			g2.setColor((pointer_x == 1) ? Color.yellow :Color.white);		
+			g2.drawString("No", x + GamePanel.WIDTH / 8, y + GamePanel.HEIGHT * 1 / 5);
+			
+		}
+		
+		//디폴트 돌릴 때 확인용.
+		if(def_Reset) {
+			 x = GamePanel.WIDTH * 1/ 3;
+			 y = GamePanel.HEIGHT * 1/ 3;
+			
+			g2.setColor(Color.black);
+			g2.setStroke(new BasicStroke(4f)); //테두리크기 4픽셀이라는 뜻
+			g2.fillRect(x, y, GamePanel.WIDTH * 1/ 3, GamePanel.HEIGHT * 1 / 3); 
+			
+			g2.setColor(Color.yellow);
+			g2.drawRect(x, y, GamePanel.WIDTH * 1/ 3, GamePanel.HEIGHT * 1 / 3);
+			
+			x += 5 + 5 * GamePanel.SIZE + GamePanel.WIDTH / 16;
+			g2.setColor(Color.white);
+			g2.drawString("Are you Sure?", x, y + GamePanel.HEIGHT / 15);
+			
+			g2.setColor((pointer_x == 0) ? Color.yellow :Color.white);
+			g2.drawString("Yes", x + GamePanel.WIDTH / 32, y + GamePanel.HEIGHT * 1 / 5);
+			
+			g2.setColor((pointer_x == 1) ? Color.yellow :Color.white);		
+			g2.drawString("No", x + GamePanel.WIDTH / 8, y + GamePanel.HEIGHT * 1 / 5);
+			
+		}
 	}
 	
 	
