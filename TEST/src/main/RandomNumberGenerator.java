@@ -6,6 +6,8 @@ import java.util.Random;
 public class RandomNumberGenerator {
 	
 	
+	//이부분을 떼어내서 사용할 것.
+	
     public static int generateRandomNumber(double num) {
         Random random = new Random();
         double probability = random.nextDouble(); // 0.0에서 1.0 사이의 double 값 생성
