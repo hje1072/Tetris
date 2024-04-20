@@ -21,6 +21,8 @@ public class RandomNumberGenerator {
         }
     }
     
+    //아래는 테스트기
+    
     public static void main(String[] args) {
     	//몇번 나오게 할지 정하기 
     	
@@ -34,7 +36,7 @@ public class RandomNumberGenerator {
         int[] countNumbers = new int[8]; // 0번 인덱스는 사용하지 않음
         int sum = 0;
         
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 10000000; i++) {
             int randomNumber = generateRandomNumber(num);
             countNumbers[randomNumber]++; // 해당 숫자가 나온 횟수 증가
             sum++;
@@ -49,7 +51,7 @@ public class RandomNumberGenerator {
         // 총 횟수 출력
         System.out.println("Total count: " + sum);
         
-        DecimalFormat df = new DecimalFormat("#.###");
+        DecimalFormat df = new DecimalFormat("#.####");
         //검사
         System.out.println("모두 무작위일 때 확률: " + df.format((double)1/7));
         
