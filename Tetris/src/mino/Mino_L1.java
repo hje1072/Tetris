@@ -8,6 +8,14 @@ public class Mino_L1 extends Mino {
 		create(Color.orange);
 	}
 	
+	
+	//itemL 구현용
+	public Mino_L1(int num) {
+		
+		create(Color.orange);
+		b[num].L = true;
+	}
+	
 	public void setXY(int x, int y) {
 		//  □ 1번
 		//  ■ 얘가 0번. 왜냐면 회전한 모양 만들기 편한위치

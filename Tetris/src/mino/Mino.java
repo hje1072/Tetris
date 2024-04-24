@@ -1,14 +1,18 @@
 package mino;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
+import main.GamePanel;
 import main.KeyHandler;
 import main.PlayManager;
 
 
 
 public class Mino {
+	
+	
 	
 	public Block b[] = new Block[4];
 	public Block tempB[] = new Block[4];//회전가능 모양들
@@ -17,14 +21,17 @@ public class Mino {
 	public int direction = 1; //방향
 	
 	//블록 collision 넣어주기 (벽설정)
-	boolean leftCollision, rightCollision, bottomCollision;
+	public boolean leftCollision, rightCollision, bottomCollision;
 	//블록활성화
 	public boolean active = true;
 	//슬라이딩용
 	public boolean deactivating;
-	int deactivateCounter = 0;
+	public int deactivateCounter = 0;
 	
+	//아이템용 예비블록들.
+	public Block center;
 	
+	//색깔을 넣어주기.
 	public void create(Color c) {
 		b[0] = new Block(c);
 		b[1] = new Block(c);
@@ -40,6 +47,7 @@ public class Mino {
 	
 	public void setXY(int x, int y) {}
 	
+	//돌릴때 쓰는놈.
 	public void updateXY(int direction) {
 		
 		//업데이트 여부 체크전 돌아가도되는놈인지 check.
@@ -50,14 +58,13 @@ public class Mino {
 			
 			this.direction =direction;
 			
-			b[0].x = tempB[0].x;
-			b[0].y = tempB[0].y;
-			b[1].x = tempB[1].x;
-			b[1].y = tempB[1].y;
-			b[2].x = tempB[2].x;
-			b[2].y = tempB[2].y;
-			b[3].x = tempB[3].x;
-			b[3].y = tempB[3].y;
+			for(int i = 0 ; i < 4 ; i++) {		
+				b[i].x = tempB[i].x;
+				b[i].y = tempB[i].y;
+			}
+			
+			
+			
 		}
 		
 		
@@ -177,34 +184,8 @@ public class Mino {
 		
 	}
 	
-	
-		
-	
-	public void update() {
-		
-		if(deactivating) {
-			deactivating();
-		}
-		
-		
-		//쾅 내리기
-		if(KeyHandler.fallPressed) {
-			
-			while (bottomCollision == false) {
-				b[0].y += Block.SIZE;
-				b[1].y += Block.SIZE;
-				b[2].y += Block.SIZE;
-				b[3].y += Block.SIZE;
-				
-				checkMovementCollision(); 
-			}
-			
-			//떨어지는 속도 조절시 오토드랍카운터는 초기화시켜줍시다.
-			deactivateCounter = 1557;
-			
-			KeyHandler.fallPressed = false;
-		}
-		
+	//직접 움직이는 부분
+	public void handling() {
 		//블록 움직이기
 		if(KeyHandler.turnPressed) {
 			switch(direction) {
@@ -225,10 +206,9 @@ public class Mino {
 		if(KeyHandler.downPressed) {
 			
 			if (bottomCollision == false) {
-				b[0].y += Block.SIZE;
-				b[1].y += Block.SIZE;
-				b[2].y += Block.SIZE;
-				b[3].y += Block.SIZE;
+				for(int i = 0 ; i < 4 ; i++) {
+					b[i].y += Block.SIZE;
+				}
 			}
 			
 			//떨어지는 속도 조절시 오토드랍카운터는 초기화시켜줍시다.
@@ -236,14 +216,17 @@ public class Mino {
 			
 			KeyHandler.downPressed = false;
 		}
+		
+		
+		
 		if(KeyHandler.leftPressed) {
 			
 			//왼쪽벽없을시, 이동
 			if (leftCollision == false) {
-				b[0].x -= Block.SIZE;
-				b[1].x -= Block.SIZE;
-				b[2].x -= Block.SIZE;
-				b[3].x -= Block.SIZE;
+				
+				for(int i = 0 ; i < 4 ; i++) {
+					b[i].x -= Block.SIZE;
+				}
 			}
 			
 			KeyHandler.leftPressed = false;
@@ -252,16 +235,21 @@ public class Mino {
 			
 			//오른쪽벽없을시, 이동
 			if (rightCollision == false) {
-				b[0].x += Block.SIZE;
-				b[1].x += Block.SIZE;
-				b[2].x += Block.SIZE;
-				b[3].x += Block.SIZE;
+				
+				for(int i = 0 ; i < 4 ; i++) {
+					b[i].x += Block.SIZE;
+				}
+				
 			}
 			
 			KeyHandler.rightPressed = false;
 		}
 		
 		
+	}
+	
+	//시간지나면 알아서 움직이는부분
+	public void handling_Auto() {
 		if(bottomCollision) {
 			deactivating = true;
 		}
@@ -269,23 +257,56 @@ public class Mino {
 			autoDropCounter++; // 매 프레임마다 증가
 			if(autoDropCounter == PlayManager.dropInterval) {
 				//60프레임이후 한칸 내려주기
-				b[0].y += Block.SIZE;
-				b[1].y += Block.SIZE;
-				b[2].y += Block.SIZE;
-				b[3].y += Block.SIZE;
+				
+				//일단 4블럭기준인데 여러블럭일경우 보정필요.
+				for(int i = 0 ; i < 4 ; i++) {
+					b[i].y += Block.SIZE;
+				}
+				
 				autoDropCounter = 0; //초기화해줘서 0부터 반복.
 			}
 		}
+	}
+	
+	public void update() {
 		
-	}	
+		if(deactivating) {
+			deactivating();
+		}
+		
+		
+		//쾅 내리기
+		if(KeyHandler.fallPressed) {
+			
+			while (bottomCollision == false) {
+				
+				//일단 4블럭기준인데 여러블럭일경우 보정필요.
+				for(int i = 0 ; i < 4 ; i++) {
+					b[i].y += Block.SIZE;
+				}
+				
+				
+				checkMovementCollision(); 
+			}
+			
+			//떨어지는 속도 조절시 오토드랍카운터는 초기화시켜줍시다.
+			deactivateCounter = 1557;
+			
+			KeyHandler.fallPressed = false;
+		}
+		
+		handling();
+		handling_Auto();
+	}
 	
 	//슬라이딩용 deactivating() 메소드
-	private void deactivating() {
+	protected void deactivating() {
 		
 		deactivateCounter ++;
 		
-		//슬라이딩은 20 frame 정도 시간을 줄게.
-		if(deactivateCounter >= 20) {
+		//슬라이딩은 10 frame 정도 시간을 줄게.
+		
+		if(deactivateCounter >= 10) {
 			
 			deactivateCounter = 0;
 			checkMovementCollision(); // 45프레임동안 대기후 바닥에 닿아있네? 바로 active 끄기.
@@ -301,10 +322,32 @@ public class Mino {
 		
 		int margin = 2;
 		g2.setColor(b[0].c);
-		g2.fillRect(b[0].x + margin, b[0].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
-		g2.fillRect(b[1].x + margin, b[1].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
-		g2.fillRect(b[2].x + margin, b[2].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
-		g2.fillRect(b[3].x + margin, b[3].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
+		
+		
+		for(int i = 0 ; i < 4 ; i ++) {
+			
+			//itemL 보유중일경우 L 표시.
+			if(b[i].L) {
+				g2.setColor(Color.white);
+				g2.fillRect(b[i].x + margin, b[i].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
+
+				g2.setColor(b[i].c);
+
+				g2.drawRect(b[i].x + margin, b[i].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
+				
+				
+				g2.setColor(Color.black);
+				g2.drawString("L", b[i].x + margin, b[i].y + Block.SIZE - margin * 2);
+				
+				g2.setColor(b[i].c);
+				
+			}
+			else {
+				
+				
+				g2.fillRect(b[i].x + margin, b[i].y + margin, Block.SIZE - (margin*2), Block.SIZE - (margin*2));
+			}
+		}
 		
 	}
 	

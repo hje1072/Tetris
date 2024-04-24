@@ -60,6 +60,22 @@ public class GamePanel extends JPanel implements Runnable {
 	public static boolean userKeyset = false;
 	public static int userKey = 0;
 	
+	//난이도 불러오기
+	public void readDifficulty() {
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/difficulty.csv";
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	difficulty = br.readLine();
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+        
+	}
+	
+	
 	//해상도 불러오기
 	public int readSize() {
     	String currentDirectory = System.getProperty("user.dir");
@@ -122,10 +138,12 @@ public class GamePanel extends JPanel implements Runnable {
 	//점수기입용
 	public static boolean enteringScore;
 	public static String score = "0";
-	
+	public static String difficulty;
 	
 	//생성자.
 	public GamePanel() {
+		//난이도 설정.
+		readDifficulty();
 		
 		//사이즈설정.
 		SIZE = readSize();

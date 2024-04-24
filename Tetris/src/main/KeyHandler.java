@@ -9,7 +9,6 @@ public class KeyHandler implements KeyListener{
 		quitPressed, enterPressed, menuPressed, fallPressed, turnPressed;
 	
 	
-	
 	@Override // 이거 당장은 안쓸거임
 	public void keyTyped(KeyEvent e) {} 
 	
@@ -27,6 +26,7 @@ public class KeyHandler implements KeyListener{
 		//위
 		if (code == GamePanel.keySetting[0]) {
 			upPressed = true;
+			
 		}
 		//왼쪽
 		if (code == GamePanel.keySetting[1]) {

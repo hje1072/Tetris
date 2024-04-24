@@ -8,6 +8,12 @@ public class Mino_Bar extends Mino {
 		create(Color.cyan);
 	}
 	
+	public Mino_Bar(int num) {
+		
+		create(Color.cyan);
+		b[num].L = true;
+	}
+	
 	public void setXY(int x, int y) {
 		// □ ■ □ □
 		
@@ -58,23 +64,56 @@ public class Mino_Bar extends Mino {
 		tempB[0].x = b[0].x;
 		tempB[0].y = b[0].y;
 		tempB[1].x = b[0].x;
+		tempB[1].y = b[0].y - Block.SIZE;
+		tempB[2].x = b[0].x;
+		tempB[2].y = b[0].y + Block.SIZE;
+		tempB[3].x = b[0].x;
+		tempB[3].y = b[0].y + (Block.SIZE * 2);
+		
+		updateXY(2);
+		
+		
+	}
+	
+	
+	public void getDirection3() {
+		
+		// □ □ ■ □ 
+		// 3 2 0 1
+		tempB[0].x = b[0].x;
+		tempB[0].y = b[0].y;
+		tempB[1].x = b[0].x + Block.SIZE;
+		tempB[1].y = b[0].y;
+		tempB[2].x = b[0].x - Block.SIZE;
+		tempB[2].y = b[0].y;
+		tempB[3].x = b[0].x - (Block.SIZE * 2);
+		tempB[3].y = b[0].y;
+		
+		updateXY(3);
+		
+	}
+	public void getDirection4() {
+		
+		// □
+		// □
+		// ■
+		// □
+		
+		// 3
+		// 2
+		// 0
+		// 1
+		
+		tempB[0].x = b[0].x;
+		tempB[0].y = b[0].y;
+		tempB[1].x = b[0].x;
 		tempB[1].y = b[0].y + Block.SIZE;
 		tempB[2].x = b[0].x;
 		tempB[2].y = b[0].y - Block.SIZE;
 		tempB[3].x = b[0].x;
 		tempB[3].y = b[0].y - (Block.SIZE * 2);
 		
-		updateXY(2);
-		
-		
-	}
-	public void getDirection3() {
-		//1번이랑 같은모양
-		getDirection1();
-	}
-	public void getDirection4() {
-		//2번이랑 같은모양
-		getDirection2();
+		updateXY(4);
 	}
 	
 }

@@ -4,8 +4,16 @@ import java.awt.Color;
 
 public class Mino_L2 extends Mino {
 	
+	
+	
 	public Mino_L2() {
 		create(Color.blue);
+	}
+	
+	public Mino_L2(int num) {
+		
+		create(Color.blue);
+		b[num].L = true;
 	}
 	
 	public void setXY(int x, int y) {

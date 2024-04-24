@@ -8,6 +8,12 @@ public class Mino_T extends Mino {
 		create(Color.magenta);
 	}
 	
+	public Mino_T(int num) {
+		
+		create(Color.magenta);
+		b[num].L = true;
+	}
+	
 	public void setXY(int x, int y) {
 		//   □
 		// □ ■ □

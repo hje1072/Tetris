@@ -24,6 +24,23 @@ public class Setting {
 	boolean def_Reset = false;
 	boolean score_Reset = false;
 	
+	//난이도 저장용
+	public void difficultySet(String str) {
+		
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/difficulty.csv";
+		
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
+            // CSV 파일에 데이터 쓰기
+            writer.println(str); // 헤더
+            
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+	}
+	
+	
 	//사이즈저장용
 	public void sizeSet(int size) {
 		
@@ -139,28 +156,25 @@ public class Setting {
 			switch(pointer_y) {
 			
 			
-			case 0 :  //해상도
+			case 0 :  //레벨
 				switch(pointer_x) {
 				case 0 :
-					// 640 * 480
-					GamePanel.SIZE = 0;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
+					// 이지
+					GamePanel.difficulty = "easy";
+					difficultySet("easy");
+					System.out.println(GamePanel.difficulty); //연습용
 					
 					break;
-				case 1 : //디폴트값.
+				case 1 : //노말모드
 					// 1280 * 720
-					GamePanel.SIZE = 1;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
-					
+					GamePanel.difficulty = "normal";
+					difficultySet("normal");
+					System.out.println(GamePanel.difficulty);//연습용
 					break;
 				case 2 : 
-					//1920 * 1080
-					GamePanel.SIZE = 2;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
-					
+					GamePanel.difficulty = "hard";
+					difficultySet("hard");
+					System.out.println(GamePanel.difficulty);//연습용
 					break;
 				}
 				break;
@@ -194,13 +208,37 @@ public class Setting {
 				
 				break;
 			
+			case 5 : //해상도
+				switch(pointer_x) {
+				case 0 :
+					// 640 * 480
+					GamePanel.SIZE = 0;
+					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
+					
+					break;
+				case 1 : //디폴트값.
+					// 1280 * 720
+					GamePanel.SIZE = 1;
+					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
+					
+					break;
+				case 2 : 
+					//1920 * 1080
+					GamePanel.SIZE = 2;
+					GamePanel.sizeChange = true;
+					sizeSet(GamePanel.SIZE);
+					
+					break;
+				}
+				break;
 			
-			
-			case 5 : //색맹모드
+			case 6 : //색맹모드
 				
 				break;
 				
-			case 6 : //스코어보드초기화.
+			case 7 : //스코어보드초기화.
 				
 				if (score_Reset) {
 					switch(pointer_x) {
@@ -221,7 +259,7 @@ public class Setting {
 				
 				break;
 			
-			case 7 : //기본값으로 초기화.
+			case 8 : //기본값으로 초기화.
 				if (def_Reset) {
 					switch(pointer_x) {
 					case 0 :
@@ -245,7 +283,7 @@ public class Setting {
 				else {
 					def_Reset = true;
 				}
-				
+				break;
 				
 				
 			}
@@ -278,6 +316,13 @@ public class Setting {
 					pointer_x = 4;
 				}
 				break;
+			case 5 :
+				if ( pointer_x < 0) {
+					pointer_x = 2;
+				}
+				
+				break;
+			
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
 				if (pointer_x < 0) {
 					pointer_x = 1;
@@ -287,8 +332,8 @@ public class Setting {
 			KeyHandler.leftPressed = false;
 		}
 	}
-
-
+	
+	
 	//오른쪽
 	private void rightPress() {
 		
@@ -297,7 +342,7 @@ public class Setting {
 			
 			switch(pointer_y) {
 			
-			case 0 : //해상도 섹션은 x값이 3개임
+			case 0 : //난이도 조절은 x값이 3개임
 				
 				if (pointer_x >= 3 ) {
 					pointer_x = 0;
@@ -312,6 +357,12 @@ public class Setting {
 				if (pointer_x >= 5 ) {
 					pointer_x = 0;
 				}
+				break;
+			case 5 : //해상도 섹션
+				if ( pointer_x >= 3) {
+					pointer_x = 0;
+				}
+				
 				break;
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
 				if (pointer_x >= 2 ) {
@@ -329,7 +380,7 @@ public class Setting {
 		if (KeyHandler.upPressed == true) {
 			pointer_y -= 1;
 			if (pointer_y < 0) {
-				pointer_y = 7;
+				pointer_y = 8;
 			}
 			
 			//y값에 따른 x값 조정
@@ -394,7 +445,7 @@ public class Setting {
 		//아래쪽
 		if (KeyHandler.downPressed == true) {
 			pointer_y += 1;
-			if (pointer_y >= 8 ) {
+			if (pointer_y >= 9 ) {
 				pointer_y = 0;
 			}
 			
@@ -603,7 +654,6 @@ public class Setting {
 	}
 	
 	
-	
 	public void update() {
 		
 		if (GamePanel.userKeyset) {
@@ -625,25 +675,31 @@ public class Setting {
 		int x = GamePanel.WIDTH / 8;
 		int y = GamePanel.HEIGHT / 8;
 		
-		//해상도 그리기
+		//레벨설정.
 		x += 5 + 5 * GamePanel.SIZE;
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("screen size", x, y);
+		g2.drawString("difficulty", x, y);
 		
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor((pointer_y == 0 && pointer_x == 0) ? Color.yellow : Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
-		g2.drawString("small", x + 5 + 5 * GamePanel.SIZE , y);
+		g2.drawString("easy", x + 5 + 5 * GamePanel.SIZE , y);
 		
-		x = GamePanel.WIDTH * 5 / 13;
+		x = GamePanel.WIDTH * 5 / 15;
 		g2.setColor((pointer_y == 0 && pointer_x == 1) ? Color.yellow : Color.white);
-		g2.drawString("middle", x + 5 + 5 * GamePanel.SIZE , y);
+		g2.drawString("normal", x + 5 + 5 * GamePanel.SIZE , y);
 		
-		x = GamePanel.WIDTH * 2 / 3;
+		x = GamePanel.WIDTH * 3 / 5;
 		g2.setColor((pointer_y == 0 && pointer_x == 2) ? Color.yellow : Color.white);
-		g2.drawString("large", x + 5 + 5 * GamePanel.SIZE , y);
+		g2.drawString("hard", x + 5 + 5 * GamePanel.SIZE , y);
+		
+		x+= GamePanel.WIDTH / 8;
+		g2.setColor(Color.gray);
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
+		g2.drawString("["+GamePanel.difficulty+"]", x + 5 + 5 * GamePanel.SIZE , y);
+		g2.drawString("current", x + 5 + 5 * GamePanel.SIZE , y - GamePanel.HEIGHT / 15);
 		
 		
 		//키세팅 그리기
@@ -698,7 +754,7 @@ public class Setting {
 		g2.drawString("[drop]", x, y);
 		
 		x += GamePanel.WIDTH / 8;
-		g2.drawString("[puase]", x, y);
+		g2.drawString("[pause]", x, y);
 		
 		x += GamePanel.WIDTH / 8;
 		g2.drawString("[menu]", x, y);
@@ -750,12 +806,40 @@ public class Setting {
 	
 	//2페이지
 	public void settingPage2(Graphics2D g2) {
-		int x;
-		int y;
+		
+		int x = GamePanel.WIDTH / 8;
+		int y = GamePanel.HEIGHT / 8;
+		
+		//해상도 그리기
+		x += 5 + 5 * GamePanel.SIZE;
+		y += GamePanel.HEIGHT / 15;	
+		
+		g2.setColor(Color.white);
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
+		g2.drawString("screen size", x, y);
+		
+		y += GamePanel.HEIGHT / 15;
+		g2.setColor((pointer_y == 5 && pointer_x == 0) ? Color.yellow : Color.white);
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
+		g2.drawString("small", x + 5 + 5 * GamePanel.SIZE , y);
+		
+		x = GamePanel.WIDTH * 5 / 13;
+		g2.setColor((pointer_y == 5 && pointer_x == 1) ? Color.yellow : Color.white);
+		g2.drawString("middle", x + 5 + 5 * GamePanel.SIZE , y);
+		
+		x = GamePanel.WIDTH * 2 / 3;
+		g2.setColor((pointer_y == 5 && pointer_x == 2) ? Color.yellow : Color.white);
+		g2.drawString("large", x + 5 + 5 * GamePanel.SIZE , y);
+		
+		
+		
+		
+		
+		
 		
 		//색맹모드
-		x = GamePanel.WIDTH / 8;
-		y = GamePanel.HEIGHT / 8;
+		x = GamePanel.WIDTH / 8 + 5 * GamePanel.SIZE;
+		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 15;
 		
 		x += 5 + 5 * GamePanel.SIZE;
 		y += GamePanel.HEIGHT / 15;
@@ -766,16 +850,18 @@ public class Setting {
 		//색맹모드 apply cancel 용도
 		x += GamePanel.WIDTH / 8 * 4;
 		
-		g2.setColor((pointer_x == 0 && pointer_y == 5) ? Color.yellow :Color.white);
+		g2.setColor((pointer_y == 6 && pointer_x == 0) ? Color.yellow :Color.white);
 		g2.drawString("On", x, y);
 		
-		g2.setColor((pointer_x == 1 && pointer_y == 5) ? Color.yellow :Color.white);		
+		g2.setColor((pointer_y == 6 && pointer_x == 1) ? Color.yellow :Color.white);		
 		g2.drawString("Off", x + GamePanel.WIDTH / 8, y);
+		
+		
 		
 		
 		//스코어보드 초기화용
 		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
-		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 15;
+		y = GamePanel.HEIGHT / 3 + GamePanel.HEIGHT / 15;
 		
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
@@ -783,7 +869,7 @@ public class Setting {
 		
 		
 		x += GamePanel.WIDTH / 8 * 4;
-		g2.setColor(pointer_y == 6 ? Color.yellow :Color.white);
+		g2.setColor(pointer_y == 7 ? Color.yellow :Color.white);
 		g2.drawString("Reset", x + GamePanel.WIDTH / 8, y);
 		
 		
@@ -792,7 +878,7 @@ public class Setting {
 		//임시 default용
 		x = GamePanel.WIDTH / 5;
 		y = GamePanel.HEIGHT / 4 * 3;
-		g2.setColor((pointer_y == 7)? Color.red : Color.gray);
+		g2.setColor((pointer_y == 8)? Color.red : Color.gray);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 40 + 40 * GamePanel.SIZE));
 		g2.drawString("Default Initialization!!!", x, y);
 		
@@ -866,7 +952,7 @@ public class Setting {
 		
 		g2.setColor(Color.white);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60 + 60 * GamePanel.SIZE));
-		g2.drawString("Setting", x, y);
+		g2.drawString("Setting<"+(pointer_y<= 4 ? 1 :2)+"/2>", x, y);
 		
 		if(pointer_y <= 4) {
 			settingPage1(g2);

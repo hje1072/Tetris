@@ -8,6 +8,13 @@ public class Mino_Z1 extends Mino {
 		create(Color.red);
 	}
 	
+	public Mino_Z1(int num) {
+		
+		create(Color.red);
+		b[num].L = true;
+	}
+	
+	
 	public void setXY(int x, int y) {
 		//   □
 		// □ ■
@@ -73,10 +80,43 @@ public class Mino_Z1 extends Mino {
 		
 	}
 	public void getDirection3() {
-		getDirection1();
+		//   □
+		// ■ □
+		// □
+		
+		//   3
+		// 0 2
+		// 1
+		
+		//모양 정보 temp에 넣어두기.
+		tempB[0].x = b[0].x;
+		tempB[0].y = b[0].y;
+		tempB[1].x = b[0].x;
+		tempB[1].y = b[0].y + Block.SIZE;
+		tempB[2].x = b[0].x + Block.SIZE;
+		tempB[2].y = b[0].y;
+		tempB[3].x = b[0].x + Block.SIZE;
+		tempB[3].y = b[0].y - Block.SIZE;
+		
+		updateXY(3);
 	}
 	public void getDirection4() {
-		getDirection2();
+		// □ ■
+		//   □ □
+		
+		// 1 0
+		//   2 3
+		
+		tempB[0].x = b[0].x;
+		tempB[0].y = b[0].y;
+		tempB[1].x = b[0].x - Block.SIZE;
+		tempB[1].y = b[0].y;
+		tempB[2].x = b[0].x;
+		tempB[2].y = b[0].y + Block.SIZE;
+		tempB[3].x = b[0].x + Block.SIZE;
+		tempB[3].y = b[0].y + Block.SIZE;
+		
+		updateXY(4);
 	}
 	
 }
