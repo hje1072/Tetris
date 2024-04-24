@@ -18,6 +18,10 @@ public class Block extends Rectangle{
 	//itemW 체크용.
 	public boolean W = false;
 	
+	//itemG 체크용
+	public boolean G =false;
+	
+	
 	//색깔결정해주기
 	public Block(Color c) {
 		

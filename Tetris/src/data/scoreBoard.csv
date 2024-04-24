@@ -2,10 +2,10 @@ Name,Score,Difficulty
 tester,6290,normal
 aaa,350,normal
 zxcv,350,normal
+qwe,210,easy
 qwer,10,hard
 qwer,10,easy
-------,0,===
-------,0,===
+UNKNOWN,10,easy
 ------,0,===
 ------,0,===
 ------,0,===

@@ -12,6 +12,8 @@ import main.PlayManager;
 
 public class Mino {
 	
+	
+	
 	public Block b[] = new Block[4];
 	public Block tempB[] = new Block[4];//회전가능 모양들
 	
@@ -24,9 +26,10 @@ public class Mino {
 	public boolean active = true;
 	//슬라이딩용
 	public boolean deactivating;
-	int deactivateCounter = 0;
+	public int deactivateCounter = 0;
 	
-	
+	//아이템용 예비블록들.
+	public Block center;
 	
 	//색깔을 넣어주기.
 	public void create(Color c) {

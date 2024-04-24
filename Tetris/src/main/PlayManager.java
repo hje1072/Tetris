@@ -92,6 +92,7 @@ public class PlayManager {
 		level = 1;
 		lines = 0;
 		score = 0;
+		itemChance= 1;
 		gameOver = false; 
 		KeyHandler.pausePressed = false;
 		
@@ -123,7 +124,9 @@ public class PlayManager {
 			mino = pick_normalMino();
 			
 			//테스트용 잠깐바꿈
-			mino = new Mino_Square(Calc.generateRN(4));
+			
+			mino = new Mino_Item_Ghost();
+			mino = new Mino_Bar();
 		}
 		
 		
@@ -152,12 +155,12 @@ public class PlayManager {
 	private Mino pick_itemMino() {
 		Mino mino = null;
 		
-		int i = Calc.generateRN(2);
-		System.out.println(i);
+		int i = Calc.generateRN(1);
+		//System.out.println(i); //디버깅용
 		
 		switch(i) {
 		
-		case 0 :
+		case 2 :
 			
 			int j = Calc.generateWRN(GamePanel.difficulty);
 			int jj = Calc.generateRN(4);
@@ -177,7 +180,13 @@ public class PlayManager {
 		case 1 : //무게추 아이템
 			
 			mino = new Mino_Item_Weight(); break;
+			
+		case 0 : //유령아이템
+			
+			mino = new Mino_Item_Ghost(); break;
 		}
+		
+			
 		
 		return mino;
 	}
@@ -214,11 +223,15 @@ public class PlayManager {
 			//무게추아이템일 경우 무시해줌.
 			if(currentMino.b[0].W == false) {
 				
-				//무게추 아이템이 아니면 저장해도됨
+				if(currentMino.b[0].G) {
+					staticBlocks.add(currentMino.center);
+				}
+				
 				staticBlocks.add(currentMino.b[0]);
 				staticBlocks.add(currentMino.b[1]);
 				staticBlocks.add(currentMino.b[2]);
 				staticBlocks.add(currentMino.b[3]);
+				
 			}
 			
 			
@@ -259,8 +272,10 @@ public class PlayManager {
 		int blockCount = 0;
 		int lineCount = 0;
 		
+		boolean checkBlock;
 		
 		while(x < right_x && y < bottom_y) {
+			checkBlock = false;
 			
 			for(int i = 0; i < staticBlocks.size(); i++) {
 				
@@ -271,8 +286,7 @@ public class PlayManager {
 					//한줄 올라갈때에는 blockcount를 초기화시켜줘서 다시 반복.
 					
 					
-					
-					blockCount++;
+					checkBlock = true;
 					
 					//만약에 itemL이 있으면 바로 blockCount의 값을 10 추가. 
 					//그러면 무조건 삭제됨
@@ -280,6 +294,10 @@ public class PlayManager {
 						blockCount += 10;
 					}
 				}
+				
+			}
+			if (checkBlock) {
+				blockCount ++;
 			}
 			
 			
@@ -292,14 +310,18 @@ public class PlayManager {
 				
 				//현재게임에서는 한줄에 10블록이 들어감
 				//그래서 한줄을 훑었는데 블록카운트가 10라는것은 한줄을 완성했다는 뜻.
+				
+				//ghost블록은 겹쳐서 들어가서 10줄 확인할 때, 중복체크해줘야함.
 				if(blockCount >= 10) {
+					
+					//System.out.println(blockCount);
 					
 					effectCounterOn = true;
 					effectY.add(y); //n개의 줄의 삭제정보 얻기
 					
 					for(int i = staticBlocks.size() - 1; i > -1; i--) {
 						//해당줄 찾아서 삭제해주기.
-						if(staticBlocks.get(i).y == y) {
+						if(staticBlocks.get(i).y == y ) {
 							staticBlocks.remove(i);
 						}
 						
@@ -352,7 +374,7 @@ public class PlayManager {
 		level++;
 		if(dropInterval > 12) {
 			dropInterval -= speed;
-			System.out.println(Calc.difficulty_To_num(GamePanel.difficulty));
+			//System.out.println(Calc.difficulty_To_num(GamePanel.difficulty));
 		}
 		else {
 			dropInterval -= 1;
@@ -412,6 +434,11 @@ public class PlayManager {
 				g2.drawString("SCORE: " + score, x, y);
 		
 		
+		//쌓은 블록 (staticblock) 표시해주기
+		for(int i = 0; i < staticBlocks.size(); i++) {
+			//한블록씩가져와서 표시해줍시다.
+			staticBlocks.get(i).draw(g2);
+		}
 		
 		//현재블록 그려주기 오류없으면 그려주세요
 		if((currentMino != null) && (gameOver == false)) {
@@ -421,12 +448,6 @@ public class PlayManager {
 		//다음블록 표시해주기
 		nextMino.draw(g2);
 		
-		
-		//쌓은 블록 (staticblock) 표시해주기
-		for(int i = 0; i < staticBlocks.size(); i++) {
-			//한블록씩가져와서 표시해줍시다.
-			staticBlocks.get(i).draw(g2);
-		}
 		
 		//이펙트 그려주기
 		if(effectCounterOn) {
