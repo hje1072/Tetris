@@ -51,7 +51,7 @@ public class PlayManager {
 	//아이템 발동시 사용할 친구임.
 	// lines 가 10의 배수 일때마다 itemChance 발동
 	//잠깐 낮춰놓음
-	int itemChance= 1;
+	int itemChance= 10;
 	
 	
 	public PlayManager() {
@@ -117,16 +117,17 @@ public class PlayManager {
 		if (lines >= itemChance) {
 			
 			//잠깐 낮춰놓음.
-			itemChance += 1;
+			itemChance += 10;
 			mino = pick_itemMino();
 		}
 		else {
 			mino = pick_normalMino();
 			
 			//테스트용 잠깐바꿈
-			
+			/*
 			mino = new Mino_Item_Ghost();
 			mino = new Mino_Bar();
+			*/
 		}
 		
 		
@@ -155,12 +156,12 @@ public class PlayManager {
 	private Mino pick_itemMino() {
 		Mino mino = null;
 		
-		int i = Calc.generateRN(1);
+		int i = Calc.generateRN(3);
 		//System.out.println(i); //디버깅용
 		
 		switch(i) {
 		
-		case 2 :
+		case 0 :
 			
 			int j = Calc.generateWRN(GamePanel.difficulty);
 			int jj = Calc.generateRN(4);
@@ -181,7 +182,7 @@ public class PlayManager {
 			
 			mino = new Mino_Item_Weight(); break;
 			
-		case 0 : //유령아이템
+		case 2 : //유령아이템
 			
 			mino = new Mino_Item_Ghost(); break;
 		}
@@ -361,7 +362,9 @@ public class PlayManager {
 		//줄삭제 확인 후 점수 갱신
 		if(lineCount > 0) {
 			int singleLineScore = 10 * level;
-			score += singleLineScore * lineCount; 
+			
+			//2줄이상 연속으로 지웠을 시, 점수 제곱으로 부여.
+			score += singleLineScore * lineCount * lineCount; 
 		}
 		
 	}
