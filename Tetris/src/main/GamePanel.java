@@ -12,20 +12,22 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import mino.Block;
+
 public class GamePanel extends JPanel implements Runnable {
 	
 	//해상도 변경용도 0 : 640 * 480, 1 : 1280 * 720, 2 : 1920 * 1080
 	//디폴드값은 1 
-	public static int SIZE = 1;
+	public static int SIZE;
 	public static boolean sizeChange = false;
 	
 	
 	//스크린 사이즈
-	public static int WIDTH = 640 + 640 * SIZE;
-	public static int HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+	public static int WIDTH;
+	public static int HEIGHT;
 	
 	//해상도에 맞는 사이즈설정.
-	public static int blockSize = 20 + 10 * SIZE;
+	public static int blockSize;
 	
 	
 	// 0 : 메뉴, 1 : 게임화면, 2 : 스코어보드, 3 : 설정
@@ -57,6 +59,22 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public static boolean userKeyset = false;
 	public static int userKey = 0;
+	
+	//난이도 불러오기
+	public void readDifficulty() {
+    	String currentDirectory = System.getProperty("user.dir");
+        String csvFile = currentDirectory + "/src/data/difficulty.csv";
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	difficulty = br.readLine();
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+        
+	}
+	
 	
 	//해상도 불러오기
 	public int readSize() {
@@ -120,13 +138,17 @@ public class GamePanel extends JPanel implements Runnable {
 	//점수기입용
 	public static boolean enteringScore;
 	public static String score = "0";
-	
+	public static String difficulty;
 	
 	//생성자.
 	public GamePanel() {
+		//난이도 설정.
+		readDifficulty();
 		
 		//사이즈설정.
 		SIZE = readSize();
+		blockSize = 20 + 10 * SIZE;
+		Block.SIZE = blockSize;
 		WIDTH = 640 + 640 * SIZE;
 		HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
 		
@@ -163,11 +185,6 @@ public class GamePanel extends JPanel implements Runnable {
 		st = new Setting();
 	}
 	
-	public void asdf() {
-		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		this.setBackground(Color.black);
-		this.setLayout(null);
-	}
 	
 	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
 	public void launchGame() {

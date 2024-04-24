@@ -19,6 +19,9 @@ public class ScoreBoard {
 	
 	public static String[] Name = new String[11];
 	public static String[] Score = new String[11];
+	public static String[] Difficulty = new String[11];
+
+	
 	public String name = "";
 	
 	//점수판 갱신용
@@ -63,31 +66,22 @@ public class ScoreBoard {
 		
 		//스코어보드는 눈으로만 볼 수 있게 만듦.
 		//확인후 나가는 키만 확실히 표현하면 될듯.
-		if (KeyHandler.enterPressed == true) {
+		if (KeyHandler.enterPressed == true || KeyHandler.menuPressed == true) {
 			
 			if (newRecord) {newRecord = false;} //신기록 하이라이트용 변수 꺼주기
 			
 			KeyHandler.enterPressed = false;
+			KeyHandler.menuPressed = false;
 			GamePanel.screenRefresh = true;
 			GamePanel.screen = 0; //메인메뉴로
 		}
 		
-		if(KeyHandler.menuPressed) {
-			
-			//점수보드 초기화 예시
-			removescoreBoard();
-			readscoreBoard();
-			
-			//GamePanel.screen = 0;
-			
-			KeyHandler.menuPressed = false;
-			GamePanel.screenRefresh = true;
-		}
+		
 	}
 	
 	
 	//업데이트 필요시 이 메소드 호출바람.
-	public void readscoreBoard() {
+	public static void readscoreBoard() {
 		
     	//파일을 읽어오는 과정.
     	
@@ -105,6 +99,7 @@ public class ScoreBoard {
                 
                 Name[i] = data[0];
                 Score[i] = data[1];
+                Difficulty[i] = data[2];
                 
                 i++;
                 
@@ -148,7 +143,7 @@ public class ScoreBoard {
         }
 		
         // 새로운 데이터
-        String[] newData = {this.name, GamePanel.score};
+        String[] newData = {this.name, GamePanel.score, GamePanel.difficulty};
         
         // 2. 새로운 데이터를 추가
         lines.add(newData);
@@ -156,7 +151,7 @@ public class ScoreBoard {
         // 2-2.데이터가 10개 미만이면 필요한 만큼 0,0으로 데이터 추가
         if (lines.size() < 10) {
             for (int i = lines.size(); i < 10; i++) {
-                lines.add(new String[]{"------", "0"});
+                lines.add(new String[]{"------", "0","==="});
             }
         }
         
@@ -176,7 +171,7 @@ public class ScoreBoard {
         // 정렬된 데이터를 CSV 파일에 쓰기
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
             // 헤더 쓰기
-            writer.println("Name,Score");
+            writer.println("Name,Score,Difficulty");
             for (String[] data : lines) {
                 writer.println(String.join(",", data));
             }
@@ -192,7 +187,8 @@ public class ScoreBoard {
         
 	}
 	
-	public void removescoreBoard() {
+	//스코어정보초기화용
+	public static void removescoreBoard() {
 		
     	String currentDirectory = System.getProperty("user.dir");
         String csvFile = currentDirectory + "/src/data/scoreBoard.csv";
@@ -226,10 +222,10 @@ public class ScoreBoard {
             e.printStackTrace();
         }
 		
-        // 2-2.데이터가 10개 미만이면 필요한 만큼 0,0으로 데이터 추가
+        // 2-2.데이터가 10개 미만이면 필요한 만큼 0,0,0으로 데이터 추가
         if (lines.size() < 10) {
             for (int i = lines.size(); i < 10; i++) {
-                lines.add(new String[]{"------", "0"});
+                lines.add(new String[]{"------", "0","==="});
             }
         }
         
@@ -244,7 +240,7 @@ public class ScoreBoard {
         // 정렬된 데이터를 CSV 파일에 쓰기
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
             // 헤더 쓰기
-            writer.println("Name,Score");
+            writer.println("Name,Score,Difficulty");
             for (String[] data : lines) {
                 writer.println(String.join(",", data));
             }
@@ -278,8 +274,11 @@ public class ScoreBoard {
 		g2.setColor(Color.yellow);
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		
-		g2.drawString(Name[0], x, y); g2.drawString(Score[0], x + GamePanel.WIDTH * 1 / 3, y); 
+		g2.drawString(Name[0], x, y); //이름
+		g2.drawString(Difficulty[0], x + GamePanel.WIDTH * 1 / 3, y); //난이도
+		g2.drawString(Score[0], x + GamePanel.WIDTH * 1 / 2, y); //스코어보드
 		
+		g2.setFont(new Font("맑은고딕", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		g2.setColor(Color.white);
 		for(int k = 1 ; k <= 10 ; k++) {
 			y += GamePanel.HEIGHT / 14;
@@ -287,7 +286,9 @@ public class ScoreBoard {
 			if(newRecord && k == (index)) {g2.setColor(Color.green);;}
 			
 			
-			g2.drawString(Name[k], x, y); g2.drawString(Score[k], x + GamePanel.WIDTH * 1 / 3, y);
+			g2.drawString(Name[k], x, y); //이름
+			g2.drawString(Difficulty[k], x + GamePanel.WIDTH * 1 / 3, y); //난이도
+			g2.drawString(Score[k], x + GamePanel.WIDTH * 1 / 2, y); //스코어보드
 			
 			if(newRecord && k == (index)) {g2.setColor(Color.white);}
 			
