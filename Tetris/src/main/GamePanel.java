@@ -479,6 +479,8 @@ public class GamePanel extends JPanel implements Runnable {
 					score = Integer.toString(pm.score);
 					
 					pm.allReset();
+					pm2.allReset();
+					battle = false; p1Win = false; p2Win = false; timelimitMode = false;
 				}
 				
 				if(KeyHandler.menuPressed) {
@@ -486,6 +488,8 @@ public class GamePanel extends JPanel implements Runnable {
 					screen = 0;
 					
 					pm.allReset();
+					pm2.allReset();
+					battle = false; p1Win = false; p2Win = false; timelimitMode = false;
 					
 				}
 				KeyHandler.keyCheck();
@@ -528,8 +532,8 @@ public class GamePanel extends JPanel implements Runnable {
 			mn.draw(g2);
 			break;
 		case 1 : //게임화면
-			pm.draw(g2);
 			if(battle) {pm2.draw(g2);}
+			pm.draw(g2);
 			break;
 		case 2 : //스코어보드
 			sc.draw(g2);

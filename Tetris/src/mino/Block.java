@@ -12,6 +12,11 @@ public class Block extends Rectangle{
 	public static int SIZE = GamePanel.blockSize; //1280 * 720 기준, 30X30픽셀사이즈로 만들어줄거임. 
 	public Color c;
 	
+	//배틀용 확인아이템
+	public boolean old = false;
+	
+	
+	
 	//itemL 라인을 삭제하는 이슈 만듦.
 	public boolean L = false;
 	
@@ -56,4 +61,15 @@ public class Block extends Rectangle{
 		
 	}
 	
+	public void oldSet() {
+		this.old = true;
+	}
+	
+	public void ySet(int num) {
+		this.y = num;
+	}
+	
+	public void colorSet() {
+		this.c = Color.gray;
+	}
 }

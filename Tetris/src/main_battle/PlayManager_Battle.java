@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.List;
 
 import main.Calc;
 import main.GamePanel;
@@ -71,6 +72,14 @@ public class PlayManager_Battle extends PlayManager {
 	boolean chanceS = false;
 	boolean activateS = false;
 	private int timer = 0;
+	
+	
+	
+	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
+	
+	//공격받는거 전용 라인
+	public static ArrayList<Block> staticBlocks_UnderAttack = new ArrayList<>();
+	public static boolean underAttack = false;
 	
 	//공사중
 	public PlayManager_Battle() {
@@ -161,7 +170,7 @@ public class PlayManager_Battle extends PlayManager {
 			
 		}
 		
-		
+		//테스트위치.
 		return mino;
 		
 	}
@@ -238,7 +247,6 @@ public class PlayManager_Battle extends PlayManager {
 			mino = new Mino_Item_Swap(); break;
 		}
 		
-		
 		return mino;
 	}
 	
@@ -307,8 +315,25 @@ public class PlayManager_Battle extends PlayManager {
 			
 			currentMino.deactivating = false;
 			
+			
+			
+			if(underAttack) {
+				//System.out.println("공습경보");
+				underAttack = false;
+				underAttack();
+			}
+			
 			//블록을 놓은후 라인이 지워지는지 확인해주자.
 			checkDelete();
+			
+			//테스트용
+			//System.out.println(staticBlocks.get(0).x);
+			
+			
+			//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
+			//나중에 들어온 놈만들기.
+			oldSet(); //old 블록과 new 블록 구분.
+			
 			
 			//게임오버 확인후 테트리스 게임 종료
 			//staticBlocks 상태 보고 결정
@@ -338,6 +363,20 @@ public class PlayManager_Battle extends PlayManager {
 		
 	}
 	
+	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
+	private void oldSet() {
+		for(Block b : staticBlocks) {
+			b.oldSet();
+		}
+	}
+	
+	private void staticUpper(List<Block> Blocks) {
+		for(Block b : Blocks) {
+			b.y -= Block.SIZE;;
+		}
+	}
+	
+	
 	
 	//라인지우기
 	private void checkDelete() {
@@ -351,6 +390,13 @@ public class PlayManager_Battle extends PlayManager {
 		
 		//itemS 로서, 점수 증폭 및 아이템 쿨타임감소.
 		boolean checkS;
+		
+		//배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 
+		//공격전용라인생성
+		ArrayList<Block> staticBlocks_Attack = new ArrayList<>();
+		int attackTemp_y = bottom_y - GamePanel.blockSize;
+		int attackTemp_x = 415;
+		
 		
 		while(x < right_x && y < bottom_y) {
 			checkBlock = false;
@@ -392,6 +438,8 @@ public class PlayManager_Battle extends PlayManager {
 				//ghost블록은 겹쳐서 들어가서 10줄 확인할 때, 중복체크해줘야함.
 				if(blockCount >= 10) {
 					
+					staticUpper(staticBlocks_Attack);
+					
 					checkS = false;
 					
 					//System.out.println(blockCount);
@@ -406,12 +454,24 @@ public class PlayManager_Battle extends PlayManager {
 								checkS = true;
 							}
 							
+							//배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 
+							if(staticBlocks.get(i).old) {
+								staticBlocks.get(i).x += attackTemp_x;
+								staticBlocks.get(i).ySet(attackTemp_y);
+								staticBlocks.get(i).colorSet();
+								staticBlocks_Attack.add(staticBlocks.get(i));
+							}
+							
 							staticBlocks.remove(i);
 							
 						}
 						
 						
 					}
+					
+					//배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 //배틀용 
+
+					
 					
 					chanceS = checkS;
 					activateS =checkS;
@@ -454,9 +514,71 @@ public class PlayManager_Battle extends PlayManager {
 			//itemS 를 지웠을 때 점수 증폭. 밸런스를 위해 제곱은 안함.
 			score += (activateS? 500 * level * lineCount : 0);
 			
+			
+			//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
+			if(lineCount >= 2 ) {
+				
+				PlayManager.underAttack = true;
+				
+				for(int i = 1; i <=lineCount; i++) {
+					staticUpper(PlayManager.staticBlocks_UnderAttack);
+				}
+				
+				
+				
+				for(Block b : staticBlocks_Attack) {
+					PlayManager.staticBlocks_UnderAttack.add(b);
+				}
+				
+				//공격받는거
+				int checklist = bottom_y - GamePanel.blockSize * 10 ; //10번쨰 블록. 즉 가장 높게 차있을 수 있는 위치
+				//10줄 벗어나면 없애기
+				for(int i = PlayManager.staticBlocks_UnderAttack.size() - 1; i > -1; i--) {
+					//해당줄 찾아서 삭제해주기.
+					if(PlayManager.staticBlocks_UnderAttack.get(i).y <  checklist) {
+						PlayManager.staticBlocks_UnderAttack.remove(i);
+					}
+					
+				}
+				
+				/*
+				for(Block b : staticBlocks_Attack) {
+					System.out.println(b.x);
+				}
+				*/
+			}
+			
 		}
 		
 	}
+	
+	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
+	private void underAttack() {
+		int cnt = bottom_y;
+		
+		for(Block b : staticBlocks_UnderAttack) {
+			if (b.y < cnt) {
+				cnt = b.y;
+			}
+		}
+		
+		cnt = (bottom_y - cnt) / GamePanel.blockSize;
+		
+		for(int i = 1; i<= cnt ; i++) {
+			staticUpper(staticBlocks);
+		}
+		
+		//System.out.println(cnt);
+		
+		for(Block b : staticBlocks_UnderAttack) {
+			staticBlocks.add(b);
+		}
+		
+		//공격받은 블록 초기화
+		staticBlocks_UnderAttack = new ArrayList<>();
+		
+	}
+	
 	
 	//점수 갱신 후 dropInterval 변화.
 	private void setDropInterval() {
@@ -481,6 +603,7 @@ public class PlayManager_Battle extends PlayManager {
 		staticBlocks = new ArrayList<Block>();
 		
 	}
+	
 	
 	
 	//그리기
