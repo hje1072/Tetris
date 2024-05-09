@@ -13,7 +13,7 @@ import main_battle.PlayManager_Battle;
 
 public class Mino {
 	
-	private boolean battle = false;
+	protected boolean battle = false;
 	
 	public Block b[] = new Block[4];
 	public Block tempB[] = new Block[4];//회전가능 모양들
@@ -383,7 +383,16 @@ public class Mino {
 		}
 		
 		handling();
+		
+		//10줄라인 차는거 확인하는 용도
+		
+		/*
+		if(bottomCollision) {
+			deactivating = true;
+		}
+		*/
 		handling_Auto();
+
 	}
 	
 	

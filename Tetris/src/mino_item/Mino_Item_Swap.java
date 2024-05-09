@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import main.KeyHandler;
+import main_battle.KeyHandler_2;
 import mino.Block;
 import mino.Mino;
 
@@ -37,13 +38,15 @@ public class Mino_Item_Swap extends Mino {
 	
 	public void update() {
 		
+		boolean SKILL = (battle ? KeyHandler_2.skillPressed_2 : KeyHandler.skillPressed);
+		
 		if(deactivating) {
 			deactivating();
 		}
 		
 		
 		//스킬 
-		if(KeyHandler.skillPressed) {
+		if(SKILL) {
 			
 			if(swapping > 0) {
 				swapping --;

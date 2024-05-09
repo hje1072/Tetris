@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 
 import main.KeyHandler;
 import main.PlayManager;
+import main_battle.KeyHandler_2;
+import main_battle.PlayManager_Battle;
 import mino.Block;
 import mino.Mino;
 
@@ -47,25 +49,29 @@ public class Mino_Item_Ghost extends Mino{
 		rightCollision = false;
 		bottomCollision = false;
 		
+		int leftWall = (battle ? PlayManager_Battle.left_x : PlayManager.left_x);
+		int rightWall = (battle ? PlayManager_Battle.right_x : PlayManager.right_x);
+		int bottomFloor = (battle ? PlayManager_Battle.bottom_y : PlayManager.bottom_y);
+		
 		//아래는프레임 collision 체크과정
 		
 		//왼쪽벽
 		for(int i = 0; i < this.b.length; i++) { //b.length == 4. b는 4개의 블록이죠?
-			if(b[i].x == PlayManager.left_x) { //4개의 블록들이 left와 붙는지 check
+			if(b[i].x == leftWall) { //4개의 블록들이 left와 붙는지 check
 				leftCollision = true;
 			}
 		}
 		
 		//오른쪽벽
 		for(int i = 0; i < this.b.length; i++) { //(x,y좌표는 좌측상단꼭지점 그래서 블록크기 더해줌)
-			if(b[i].x + Block.SIZE == PlayManager.right_x) {
+			if(b[i].x + Block.SIZE == rightWall) {
 				rightCollision = true;
 			}
 		}
 		
 		//아래벽
 		for(int i = 0; i < this.b.length; i++) {
-			if(b[i].y + Block.SIZE == PlayManager.bottom_y) {
+			if(b[i].y + Block.SIZE == bottomFloor) {
 				bottomCollision = true;
 			}
 		}
@@ -75,9 +81,10 @@ public class Mino_Item_Ghost extends Mino{
 	
 	public void update() {
 		
+		boolean SKILL = (battle ? KeyHandler_2.skillPressed_2 : KeyHandler.skillPressed);
 		
 		//그자리에 고정시키기.
-		if(KeyHandler.skillPressed) {
+		if(SKILL) {
 			
 			center.x = b[0].x + Block.SIZE;
 			center.y = b[0].y;

@@ -17,7 +17,7 @@ import main_battle.PlayManager_Battle;
 import mino.Block;
 public class GamePanel extends JPanel implements Runnable {
 	
-	//해상도 변경용도 0 : 640 * 480, 1 : 1280 * 720, 2 : 1920 * 1080
+	//해상도 변경용도 0 : small, 1 : middle0, 2 : large
 	//디폴드값은 1 
 	public static int SIZE;
 	public static boolean sizeChange = false;
@@ -479,7 +479,7 @@ public class GamePanel extends JPanel implements Runnable {
 					score = Integer.toString(pm.score);
 					
 					pm.allReset();
-					pm2.allReset();
+					if(battle) pm2.allReset();
 					battle = false; p1Win = false; p2Win = false; timelimitMode = false;
 				}
 				
@@ -488,7 +488,7 @@ public class GamePanel extends JPanel implements Runnable {
 					screen = 0;
 					
 					pm.allReset();
-					pm2.allReset();
+					if(battle) pm2.allReset();
 					battle = false; p1Win = false; p2Win = false; timelimitMode = false;
 					
 				}

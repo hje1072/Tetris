@@ -836,7 +836,7 @@ public class Setting {
 			
 		}
 		else if(GamePanel.userKeyset_battle) {
-			System.out.println("asdf");
+			//System.out.println("asdf");
 			usertempKey_battle();
 		}
 		

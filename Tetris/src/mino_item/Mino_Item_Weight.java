@@ -2,8 +2,10 @@ package mino_item;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 import main.PlayManager;
+import main_battle.PlayManager_Battle;
 import mino.*;
 
 public class Mino_Item_Weight extends Mino {
@@ -39,9 +41,15 @@ public class Mino_Item_Weight extends Mino {
 	
 	public void checkMovementCollision() {
 		
+
+		
 		leftCollision = false;
 		rightCollision = false;
 		bottomCollision = false;
+		
+		int leftWall = (battle ? PlayManager_Battle.left_x : PlayManager.left_x);
+		int rightWall = (battle ? PlayManager_Battle.right_x : PlayManager.right_x);
+		int bottomFloor = (battle ? PlayManager_Battle.bottom_y : PlayManager.bottom_y);
 		
 		//내가쌓은 블록 check.
 		//checkStaticBlockCollision();
@@ -50,21 +58,21 @@ public class Mino_Item_Weight extends Mino {
 		
 		//왼쪽벽
 		for(int i = 0; i < b.length; i++) { //b.length == 4. b는 4개의 블록이죠?
-			if(b[i].x == PlayManager.left_x) { //4개의 블록들이 left와 붙는지 check
+			if(b[i].x == leftWall) { //4개의 블록들이 left와 붙는지 check
 				leftCollision = true;
 			}
 		}
 		
 		//오른쪽벽
 		for(int i = 0; i < b.length; i++) { //(x,y좌표는 좌측상단꼭지점 그래서 블록크기 더해줌)
-			if(b[i].x + Block.SIZE == PlayManager.right_x) {
+			if(b[i].x + Block.SIZE == rightWall) {
 				rightCollision = true;
 			}
 		}
 		
 		//아래벽
 		for(int i = 0; i < b.length; i++) {
-			if(b[i].y + Block.SIZE == PlayManager.bottom_y) {
+			if(b[i].y + Block.SIZE == bottomFloor) {
 				bottomCollision = true;
 			}
 		}
@@ -86,14 +94,18 @@ public class Mino_Item_Weight extends Mino {
 	
 	
 	public void erasure() {
-		for(int i = 0; i < PlayManager.staticBlocks.size(); i++) {
+		
+		ArrayList<Block> staticBlocks = (battle ? PlayManager_Battle.staticBlocks : PlayManager.staticBlocks);
+		
+		
+		for(int i = 0; i < staticBlocks.size(); i++) {
 			//쌓인블록 하나씩 꺼내기
-			int targetX = PlayManager.staticBlocks.get(i).x;
-			int targetY = PlayManager.staticBlocks.get(i).y;
+			int targetX = staticBlocks.get(i).x;
+			int targetY = staticBlocks.get(i).y;
 			
 			for(int ii = 0; ii < 4; ii++) {
 				if(targetX == b[ii].x && targetY == b[ii].y) {
-					PlayManager.staticBlocks.remove(i);
+					staticBlocks.remove(i);
 					erasureMode = true;
 				}
 			}

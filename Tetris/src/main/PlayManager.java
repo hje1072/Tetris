@@ -64,6 +64,7 @@ public class PlayManager {
 	// lines 가 10의 배수 일때마다 itemChance 발동
 	//잠깐 낮춰놓음
 	int itemChance= 10;
+	int ChanceWeight = 10;
 	
 	//아이템 S 전용
 	boolean chanceS = false;
@@ -121,7 +122,7 @@ public class PlayManager {
 		level = 1;
 		lines = 0;
 		score = 0;
-		itemChance= 10;
+		itemChance= ChanceWeight;
 		gameOver = false; 
 		KeyHandler.pausePressed = false;
 		
@@ -154,7 +155,7 @@ public class PlayManager {
 		
 		else if (lines >= itemChance) {
 			//디버깅시 알아서 조절
-			itemChance += 10;
+			itemChance += ChanceWeight;
 			chanceS = false;
 			
 			mino = pick_itemMino();
@@ -318,8 +319,14 @@ public class PlayManager {
 			//테스트용
 			//System.out.println(staticBlocks.get(0).x);
 			
+			//System.out.println((bottom_y - staticBlocks.get(0).y)/GamePanel.blockSize);
+			/*
+			for (Block b : PlayManager.staticBlocks) {
+				System.out.println((b.x - left_x)/GamePanel.blockSize + 1);
+				System.out.println((bottom_y - b.y)/GamePanel.blockSize);
+			}
+			*/
 			
-			//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
 			//나중에 들어온 놈만들기.
 			oldSet(); //old 블록과 new 블록 구분.
 			
@@ -378,7 +385,9 @@ public class PlayManager {
 		//공격전용라인생성
 		ArrayList<Block> staticBlocks_Attack = new ArrayList<>();
 		int attackTemp_y = bottom_y - GamePanel.blockSize;
-		int attackTemp_x = 415;
+		
+		
+		int attackTemp_x = (GamePanel.SIZE == 0 ? 415 : (GamePanel.SIZE == 1 ? 620: 880));
 		
 		
 		//itemS 로서, 점수 증폭 및 아이템 쿨타임감소.
@@ -444,6 +453,10 @@ public class PlayManager {
 							if(staticBlocks.get(i).old) {
 								staticBlocks.get(i).x -= attackTemp_x;
 								staticBlocks.get(i).ySet(attackTemp_y);
+								
+								//아이템 초기화 
+								staticBlocks.get(i).S = false;
+								staticBlocks.get(i).L = false;
 								staticBlocks.get(i).colorSet();
 								staticBlocks_Attack.add(staticBlocks.get(i));
 							}
@@ -502,7 +515,7 @@ public class PlayManager {
 			
 			
 			//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 	//배틀용 
-			if(lineCount >= 2 ) {
+			if(lineCount >= 1 ) {
 				
 				PlayManager_Battle.underAttack = true;
 				
@@ -617,6 +630,7 @@ public class PlayManager {
 		g2.setStroke(new BasicStroke(4f));
 		
 		
+		
 		//다음 미노타일 예고상자
 		x = right_x + (25 + 25 * GamePanel.SIZE);
 		y = bottom_y - (100 + 100 * GamePanel.SIZE);
@@ -627,15 +641,49 @@ public class PlayManager {
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 이건 그냥 글자 쓰는데 렌더링해주는겨
 		g2.drawString("NEXT", x + 30 + 30 * GamePanel.SIZE, y + 30 + 30 * GamePanel.SIZE);
 		
-		//점수보드그려주기
-				g2.drawRect(x, top_y, 125 + 125 * GamePanel.SIZE, 200 + 100 * GamePanel.SIZE);
-				x += 20 + 20 * GamePanel.SIZE;
-				y = top_y + 40 + 50 * GamePanel.SIZE;
-				g2.drawString("LEVEL: " + level, x, y); y+= 70;
-				g2.drawString("LINES: " + lines, x, y); y+= 70;
-				g2.drawString("SCORE: " + score, x, y);
 		
+		if(GamePanel.battle != true) {
+			
+			x = right_x + (25 + 25 * GamePanel.SIZE);
+			y = bottom_y - (100 + 100 * GamePanel.SIZE);
+			//점수보드그려주기
+			g2.drawRect(x, top_y, 125 + 125 * GamePanel.SIZE, 200 + 100 * GamePanel.SIZE);
+			x += 20 + 20 * GamePanel.SIZE;
+			y = top_y + 40 + 50 * GamePanel.SIZE;
+			g2.drawString("LEVEL: " + level, x, y); y+= 70;
+			g2.drawString("LINES: " + lines, x, y); y+= 70;
+			g2.drawString("SCORE: " + score, x, y);
+		}
+		else {
+			//대전모드용
+			x = right_x + (25 + 25 * GamePanel.SIZE);
+			g2.drawRect(x, top_y, 125 + 125 * GamePanel.SIZE, 60 + 30 * GamePanel.SIZE);
+			y = top_y + 30 + 30 * GamePanel.SIZE;
+			x += 20 + 20 * GamePanel.SIZE;
+			g2.drawString("SCORE: " + score, x, y);
+			
+			x = right_x + (25 + 25 * GamePanel.SIZE);
+			y = top_y + 70 + 70 * GamePanel.SIZE;
+			g2.drawRect(x, y, 90 + 90 * GamePanel.SIZE, 90 + 90 * GamePanel.SIZE);
+			
+			//공격타일 보여주기.
+			g2.setColor(Color.gray);
+			y -= 1 + 1 * GamePanel.SIZE;
+			
+			for(Block b : PlayManager.staticBlocks_UnderAttack) {
+				int point_x = (b.x - left_x) / GamePanel.blockSize;
+				int point_y = 10 - (bottom_y - b.y)/GamePanel.blockSize + 1;
+				
+				g2.drawString("■", x + (9 + 9 * GamePanel.SIZE) * point_x, y + (9 + 9 * GamePanel.SIZE)* point_y);
+				
+			}
+			
+		}
 		
+				
+				
+				
+				
 		//쌓은 블록 (staticblock) 표시해주기
 		for(int i = 0; i < staticBlocks.size(); i++) {
 			//한블록씩가져와서 표시해줍시다.
