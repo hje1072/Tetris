@@ -79,3 +79,16 @@
            └── Mino_Item_Weight.java
 ```
 
+## 각 메뉴별 기능
+
+### [메뉴화면]
+- Tetris 실행 초기화면으로 Menu 화면이 나타납니다.
+
+| 메뉴화면 |
+|----------|
+![2024-05-09-20-37-32](https://github.com/hje1072/Tetris/assets/70854950/d0f56768-109e-4d0f-b149-834b9d00db23)
+
+| Basic Mode |
+|----------|
+![베이직 모드](https://github.com/hje1072/Tetris/assets/70854950/e8ab7c3c-b586-4ac7-a2b5-a815af957011)
+
