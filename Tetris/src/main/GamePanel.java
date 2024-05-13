@@ -151,7 +151,7 @@ public class GamePanel extends JPanel implements Runnable {
 		//키세팅저장csv파일 불러오기.
 		
     	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/keySetting.csv";
+        String csvFile = "src/data/keySetting.csv";
         String line = "";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
