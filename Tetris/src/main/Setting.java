@@ -67,7 +67,6 @@ public class Setting {
 		getFile(size, "size.csv");
 	}
 	
-	
 	//키세팅용
 	//뒤에꺼를 앞에다 넣을꺼임
 	public void keySet(int[] keySetAfter, int[] keySetBefore, boolean p1) {
