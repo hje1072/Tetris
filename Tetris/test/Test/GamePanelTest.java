@@ -1,258 +1,582 @@
 package Test;
 
-import static org.junit.Assert.assertArrayEquals;
-
-
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.FileWriter;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
+import javax.swing.JPanel;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import main.GamePanel;
-
-public class GamePanelTest {
-
-    // 임시 CSV 파일 경로
-    private final String csvFilePath = "temp_difficulty.csv";
-
-    @Before
-    public void difficulty_test () throws IOException {
-        // 임시 CSV 파일 생성
-        FileWriter writer = new FileWriter(csvFilePath);
-        writer.write("Easy");
-        writer.close();
-    }
-
-    @After
-    public void tearDown() {
-        // 테스트 이후에 임시 CSV 파일 삭제
-        File file = new File(csvFilePath);
-        file.delete();
-    }
-    ////
-    
-    
-    
-    // 임시 CSV 파일 경로
-    private final String csvFilePath2 = "temp_colorBlind.csv";
-
-    @Before
-    public void colorBlind_test () throws IOException {
-        // 임시 CSV 파일 생성
-        FileWriter writer = new FileWriter(csvFilePath2);
-        writer.write("2"); // 색맹 모드 설정 값
-        writer.close();
-    }
-
-    @After
-    public void tearDown2() {
-        // 테스트 이후에 임시 CSV 파일 삭제
-        File file = new File(csvFilePath2);
-        file.delete();
-    }
-    ////
-   
-
-    // readDifficulty() 메서드 테스트
-    @Test
-    public void testReadDifficulty() {
-        GamePanel gamePanel = new GamePanel();
-        // 임시 CSV 파일 경로를 설정
-        System.setProperty("user.dir", new File("").getAbsolutePath());
+import main.KeyHandler;
+import main.Menu;
+import main.PlayManager;
+import main.ScoreBoard;
+import main.Setting;
+import main_battle.KeyHandler_2;
+import main_battle.PlayManager_Battle;
+import mino.Block;
+public class GamePanelTest extends JPanel implements Runnable {
+	
+	//해상도 변경용도 0 : small, 1 : middle0, 2 : large
+	//디폴드값은 1 
+	public static int SIZE;
+	public static boolean sizeChange = false;
+	
+	
+	//스크린 사이즈
+	public static int WIDTH;
+	public static int HEIGHT;
+	
+	//해상도에 맞는 사이즈설정.
+	public static int blockSize;
+	
+	//모드설정 
+	public static boolean basicMode;
+	
+	//배틀모드용
+	
+	public static boolean battleMode = false;
+	public static boolean battle = false;
+	
+	public static boolean p1Win = false;
+	public static boolean p2Win = false;
+	
+	//대전 타이머용
+	public static boolean timelimitMode = false;
+	public static boolean timelimit = false;
+	public static int time;
+	
+	
+	// 0 : 메뉴, 1 : 게임화면, 2 : 스코어보드, 3 : 설정
+	public static int screen = 0; //초기 0번은 메뉴화면
+	public static boolean screenRefresh = false; //화면전환용 
+	
+	
+	//게임 루프용 clock
+	final int FPS = 60;
+	Thread gameThread; //게임 돌아가는 스레드
+	PlayManager pm; //게임룰 관리자
+	PlayManager pm2;
+	
+	Menu mn; //메뉴
+	ScoreBoard sc; //스코어보드
+	Setting st; //세팅
+	
+	//키보드세팅용도
+	public static int keySetting[] = new int[10];
+	//0 = 위, 1 = 왼쪽, 2 = 중간, 3 = 오른쪽, 4 = 돌리기
+	//5 = 게임중 종료, 6 = 즉시낙하, 7 = 퍼즈, 8 = 메뉴, 9 = 확인
+	
+	//기본값용도
+	public static int keySetting_Origin[] = new int[10];
+	
+	
+	//2인모드 키보드 세팅용도
+	public static int keySetting_battle[] = new int[10];
+	
+	//기본값용도도
+	public static int keySetting_battle_Origin[] = new int[10];
+	
+	public static int userkeySetting_battle[] = new int[10];
+	public static boolean userKeyset_battle = false;
+	public static int userKey_battle = 0;
+	
+	
+	//유저키세팅 받는거 확인용도
+	public static int userkeySetting[] = new int[10];
+	
+	public static boolean userKeyset = false;
+	public static int userKey = 0;
+	
+	//색맹모드 확인용.
+	public static int colorMode;
+	
+	//난이도 불러오기
+	@Test
+	public void readDifficulty() {
+        String csvFile = "/Tetris/src/data/difficulty.csv";
         
-        try {
-            gamePanel.readDifficulty();// 함수가 잘 실행되는지 확인
-        } catch (Exception e) {
-            fail("Unexpected exception occurred: " + e.getMessage());
-        }
-
-    }
-    // readcolor() 메서드 테스트
-    @Test
-    public void testReadColor() {
-        GamePanel gamePanel = new GamePanel();
-        // 임시 CSV 파일 경로를 설정
-        System.setProperty("user.dir", new File("").getAbsolutePath());
-        try {
-            gamePanel.readcolor(); // 함수가 잘 실행되는지 확인
-        } catch (Exception e) {
-            fail("Unexpected exception occurred: " + e.getMessage());
-        }
-    }
-    @Test
-    public void testReadSize() {
-        GamePanel gamePanel = new GamePanel();
-        // 임시 CSV 파일 경로를 설정
-        System.setProperty("user.dir", new File("").getAbsolutePath());
-        try {
-            gamePanel.readSize();// 함수가 잘 실행되는지 확인
-        } catch (Exception e) {
-            fail("Unexpected exception occurred: " + e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testKeySetting() {
-        GamePanel gamePanel = new GamePanel();
-        // 임시 CSV 파일 경로를 설정
-        System.setProperty("user.dir", new File("").getAbsolutePath());
-        // 테스트할 메서드 호출
-        gamePanel.keySetting();
-        // 기대되는 값들
-        int[] expectedKeySetting = {38,37,40,39,38,81,32,80,27,10}; // 일단 기본값으로 비교하기로 설정
-        // 실제 메서드에서 반환된 값들과 기대되는 값들 비교
-        assertArrayEquals(expectedKeySetting, GamePanel.keySetting);
-        assertArrayEquals(expectedKeySetting, GamePanel.userkeySetting);
-    }
-    
-    @Test
-    public void testStartGame_Battle() {
-        GamePanel gamePanel = new GamePanel();
-
-        // Initially, ensure that battleMode is false
-        assertFalse(GamePanel.battleMode);
-        
-        // Call the method
-        gamePanel.startGame_Battle();
-
-        // Check if battleMode is set to false and battle is set to true
-        assertFalse(GamePanel.battleMode);
-        assertTrue(GamePanel.battle);
-
-        // Check if PlayManager and PlayManager_Battle are initialized
-        assertNotNull(gamePanel.pm); // pm과 pm2의 값을 테스트하기 위해서 public으로 변수를 설정해놨음
-        assertNotNull(gamePanel.pm2);
-    }
-    
-    @Test
-    public void testLaunchGame() {
-        GamePanel gamePanel = new GamePanel();
-
-        // Initially, gameThread should be null
-        assertNull(gamePanel.gameThread); // gameThread의 값을 테스트하기 위해서 public으로 설정해놨음
-
-        // Call the method
-        gamePanel.launchGame();
-
-        // Check if gameThread is initialized and started
-        assertNotNull(gamePanel.gameThread);
-        assertTrue(gamePanel.gameThread.isAlive());
-    }
-    
-  
-    
-
-
-    @Test
-    public void testChangeResolution() {
-        // Create a  JFrame
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-
-        // Call changeResolution method with frame
-        gamePanel.changeResolution(800, 600);
-      
-
-    }
-    
-    
-    @Test
-    public void testRun() {
-        // Create a  JFrame
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-        
-        // Set up the values for testing (e.g., FPS)
-        int FPS = 60;
-        double drawInterval = 1000000000.0 / FPS;
-        
-        // Call the run method with the mocked gamePanel
-        gamePanel.run();
-        
-        // Sleep for a short time to allow the loop to execute (optional)
-        // This is to avoid an infinite loop in the test
-        // You may need to adjust this sleep time based on your FPS
-        try {
-            Thread.sleep(1000); // Sleep for 1 second
-        } catch (InterruptedException e) {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	difficulty = br.readLine();
+            
+        } catch (IOException e) {
+        	
             e.printStackTrace();
         }
         
+	}
+	
+	//색깔불러오기.
+	public int readcolor() {
+        String csvFile = "/Tetris/src/data/colorBlind.csv";
+        String num = "";
+        int size = 1;
         
-    }
-    
-    @Test
-    public void testUpdate_SizeChange() {
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-        // Set up initial conditions for size change
-        GamePanel.sizeChange = true;
-        GamePanel.SIZE = 1; // Set SIZE to 1 for testing
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	num = br.readLine();
+            size = Integer.parseInt(num);
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        return size;
+	}
+	
+	//해상도 불러오기
+	public int readSize() {
+        String csvFile = "/Tetirs/src/data/size.csv";
+        String num = "";
+        int size = 1;
         
-        // Call the update method
-        gamePanel.update();
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	num = br.readLine();
+            size = Integer.parseInt(num);
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        return size;
+	}
+	
+	
+	//저장해놓은 키설정 불러오기
+	@Test
+	public void keySetting() {
+		
+		//키세팅저장csv파일 불러오기.
+		
+        String csvFile = "src/data/keySetting.csv";
+        String line = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	
+        	int i = 0;
+        	int num ;
+            while ((line = br.readLine()) != null) {
+                
+            	num = Integer.parseInt(line);
+            	keySetting[i] = num;
+            	
+            	i++;
+            }
+            
+            for(i = 0; i < 10 ; i++) {
+            	userkeySetting[i] = keySetting[i];
+            }
+            
+            //userkeySetting = keySetting;
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        //확인용
+        //System.out.println("=================="); // 줄 바꿈
+		
         
-        // Assertions for size change
-        assertEquals(1280, gamePanel.WIDTH); // Assuming SIZE == 1, WIDTH should be 1280
-        assertEquals(720, gamePanel.HEIGHT); // Assuming SIZE == 1, HEIGHT should be 720
-        assertEquals(30, gamePanel.blockSize); // Assuming SIZE == 1, blockSize should be 30
-       
+        
+	}
+	
+	//저장해놓은 키설정 불러오기(대전몯)
+	public void keySetting_battle() {
+		
+		//키세팅저장csv파일 불러오기.
+		
+        String csvFile = "src/data/keySetting_battle.csv";
+        String line = "";
 
-    }
-    
-    @Test
-    public void testUpdate_0() {
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-        // Set screen to main menu case (screen = 0)
-        gamePanel.screen = 0;       
-        // Call the update method
-        gamePanel.update();    
-    }
-    
-//    @Test // update함수의 case 1번
-//    public void testUpdate_1() {
-//        
-//    }
-    @Test
-    public void testUpdate_2() {
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-        gamePanel.screen = 2;
-        gamePanel.update();
-    }
-    @Test
-    public void testUpdate_3() {
-        JFrame frame = new JFrame();
-        GamePanel gamePanel = new GamePanel();
-        gamePanel.screen = 3;
-        gamePanel.update();  
-    }
-    
-    //	public void paintComponent(Graphics g) 테스트 함수 추가 필요
-    
-   }
-    
-   
-    
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        	
+        	int i = 0;
+        	int num ;
+            while ((line = br.readLine()) != null) {
+                
+            	num = Integer.parseInt(line);
+            	keySetting_battle[i] = num;
+            	
+            	i++;
+            }
+            
+            for(i = 0; i < 10 ; i++) {
+            	userkeySetting_battle[i] = keySetting_battle[i];
+            }
+            
+            //userkeySetting = keySetting;
+            
+        } catch (IOException e) {
+        	
+            e.printStackTrace();
+        }
+		
+        //확인용
+        //System.out.println("=================="); // 줄 바꿈
+		
+        
+        
+	}
+	
+	
+	
+	//점수기입용
+	public static boolean enteringScore;
+	public static String score = "0";
+	public static String difficulty;
+	
+	//생성자.
+	public GamePanelTest() {
+		//난이도 설정.
+		readDifficulty();
+		
+		//사이즈설정.
+		SIZE = readSize();
+		blockSize = 20 + 10 * SIZE;
+		Block.SIZE = blockSize;
+		WIDTH = SIZE == 0 ? 860 : 640 + 640 * SIZE;
+		HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+		
+		//색맹설정.
+		colorMode = readcolor();
+		
+		//윈도우창 세팅
+		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		this.setBackground(Color.black);
+		this.setLayout(null);
+		
+		//키보드입력값 받아주기 세팅
+		this.setFocusable(true);
+		this.addKeyListener(new KeyHandler());
+		this.addKeyListener(new KeyHandler_2());
+		
+		
+		//기본키세팅 설정
+		keySetting();
+		keySetting_battle();
+		
+		//디폴트값용 키세팅
+		keySetting_Origin[0] = KeyEvent.VK_UP;
+		keySetting_Origin[1] = KeyEvent.VK_LEFT;
+		keySetting_Origin[2] = KeyEvent.VK_DOWN;
+		keySetting_Origin[3] = KeyEvent.VK_RIGHT;
+		keySetting_Origin[4] = KeyEvent.VK_UP; //돌리기
+		
+		keySetting_Origin[5] = KeyEvent.VK_Q; //종료
+		keySetting_Origin[6] = KeyEvent.VK_SPACE; //한번에 쾅
+		keySetting_Origin[7] = KeyEvent.VK_P; //퍼즈
+		keySetting_Origin[8] = KeyEvent.VK_ESCAPE; //메뉴
+		keySetting_Origin[9] = KeyEvent.VK_ENTER; //확인
+		
+		
+		//디폴트값용 키세팅 (대전모드)
+		keySetting_battle_Origin[0] = KeyEvent.VK_LEFT;
+		keySetting_battle_Origin[1] = KeyEvent.VK_DOWN;
+		keySetting_battle_Origin[2] = KeyEvent.VK_RIGHT;
+		keySetting_battle_Origin[3] = KeyEvent.VK_UP;
+		keySetting_battle_Origin[4] = KeyEvent.VK_PERIOD; //돌리기
+		
+		keySetting_battle_Origin[5] = KeyEvent.VK_A; //종료
+		keySetting_battle_Origin[6] = KeyEvent.VK_S; //한번에 쾅
+		keySetting_battle_Origin[7] = KeyEvent.VK_D; //퍼즈
+		keySetting_battle_Origin[8] = KeyEvent.VK_W; //메뉴
+		keySetting_battle_Origin[9] = KeyEvent.VK_V; //확인
+		
+		
+		pm = new PlayManager();
+		mn = new Menu();
+		sc = new ScoreBoard();
+		st = new Setting();
+	}
+	
+	
+	//대전모드용
+	@Test
+	public void startGame_Battle() {
+		
+		battleMode = false;
+		battle = true;
+		pm = new PlayManager();
+		
+		pm2 = new PlayManager_Battle();
+				
+	}
+	
+	
+	//게임 실행용 이거 실행할 때 자동적으로 run 메소드 불러올거임
+	@Test
+	public void launchGame() {
+		gameThread = new Thread(this);
+		gameThread.start();
+		
+	}
+	
+    // 해상도 변경 메서드
+	@Test
+    public void changeResolution() {
 
+		Frame[] frames = JFrame.getFrames();
+       JFrame frame = new JFrame();
+        if (true) {
+            frame.setPreferredSize(new Dimension(860 + 16, 640 + 39));
+            frame.setBackground(Color.black);
+            frame.setLayout(null);
+            frame.pack();
+        }
+    }
+	
 
+	@Override
+	@Test
+	public void run() {
+		
+		
+		//게임루프 과정
+		double drawInterval = 1000000000 / FPS ;
+		double delta = 0;
+		long lastTime = System.nanoTime();
+		long currentTime;
+		
+		//실행되는한 계속 움직이기
+		while(gameThread != null) {
+			
+			
+			
+			//현재시간
+			currentTime = System.nanoTime();
+			
+			//델타값을 조정
+			delta += (currentTime - lastTime) / drawInterval;
+			lastTime = currentTime;
+			
+			//델타값이 일정값에 도달할 때 마다 정보 업데이트 및 업데이트 적용
+			//현재 60 fps로 업데이트
+			
+			if(delta >= 1) {
+				update();
+				repaint();
+				delta--;
+			}
+			
+		}
+		
+		
+		
+	}
+	
+	//게임내용 업데이트용
+	@SuppressWarnings("deprecation") //해상도 바꾸기.
+	//비권장기능사용해버려서 일단 무시하라고 함
+	//비권장 해상도 어떻게 바꿀 지몰라서 비권장기능쓴거라 frfactoring 가능하면 바꿔주셈
+	@Test
+	public void update() {
+		
+		sizeChange = true;
+		if (sizeChange) {
+			sizeChange = false;
+			
+			//해상도 변경 업데이트
+			WIDTH = SIZE = 0;
+			WIDTH = SIZE == 0 ? 860 : 640 + 640 * SIZE;
+			
+			HEIGHT = SIZE == 0 ? 480 : 360 + SIZE * 360;
+			blockSize = 20 + 10 * SIZE;
+			
+			
+			this.resize(new Dimension(WIDTH, HEIGHT));
+//			changeResolution();
+			
+			
+			Block.SIZE = blockSize;
+			pm = new PlayManager();
+			mn = new Menu();
+			
+			
+		}
+		
+		battleMode = true;
+		if(battleMode) {
+			startGame_Battle();
+		}
+		
+		switch(screen) {
+		
+		case 0 : //메인메뉴
+			mn.update();
+			KeyHandler.keyCheck();
+			
+		
+		case 1 : //게임화면
+			timelimitMode = true;
+			
+			//q누르면 꺼짐
+			if (KeyHandler.quitPressed) {
+				System.exit(0);
+			}
+			//퍼즈 or 게임오버아닌경우 계속진행
+			else if(KeyHandler.pausePressed == false && pm.gameOver == false && p1Win == false) {
+				
+				pm.update();
+				
+				if(battle) {pm2.update();}
+				
+				//System.out.println(p1Win);
+				
+				if(timelimitMode) {
+					time = 0;
+					if(time <= 0) {
+						pm.score = PlayManager_Battle.score -1;
+						
+						
+						if(pm.score < PlayManager_Battle.score) {
+							pm.gameOver = true;
+							p2Win = true;
+							
+							
+						}
+						else {
+							
+							p1Win = true;
+							
+							
+						}
+						
+						
+					}
+				}
+				
+				
+				
+				
+				KeyHandler.keyCheck();
+				
+			}
+			
+			battle = true;	
+			if(battle) {
+				p1Win = true;
+				if(pm.gameOver || p1Win) {
+					
+					
+					
+					
+					//결과만 보고 끝.
+					KeyHandler.menuPressed = true;
+					if(KeyHandler.enterPressed || KeyHandler.menuPressed) {
+						KeyHandler.enterPressed = false; KeyHandler.menuPressed = false;
+						screen = 0;
+						
+						pm.allReset();
+						pm2.allReset();
+						battle = false; p1Win = false; p2Win = false; timelimitMode = false;
+						
+						pm = new PlayManager();
+					}
+					
+					KeyHandler.keyCheck();
+				}
+			}
+			
+			
+			
+			//게임오버인경우 메뉴로 안가는 경우 점수기입하러 감.
+			KeyHandler.enterPressed = true; 
+			pm.gameOver = true;
+			if(KeyHandler.enterPressed && pm.gameOver == true) {
+				KeyHandler.enterPressed = false;
+				screen = 2;
+				
+				//점수기입용
+				enteringScore = true;
+				score = Integer.toString(pm.score);
+				
+				pm.allReset();
+				if(battle) pm2.allReset();
+				battle = false; p1Win = false; p2Win = false; timelimitMode = false;
+				KeyHandler.menuPressed = true;
+			}
+			
+			if(KeyHandler.menuPressed) {
+				KeyHandler.menuPressed = false;
+				screen = 0;
+				
+				pm.allReset();
+				if(battle) pm2.allReset();
+				battle = false; p1Win = false; p2Win = false; timelimitMode = false;
+				
+			}
+			KeyHandler.keyCheck();
+			
+			
+		case 2 : //스코어보드
+			sc.update();
+			KeyHandler.keyCheck();
+			
+		
+		case 3 : //설정
+			st.update();
+			KeyHandler.keyCheck();
+			
+		}
+	}
+	
+	
+	//업데이트를 기반으로 정보들을 적용해주기
+	@Test
+	public void paintComponent() { // 매개변수 g를 받고 그걸 기준으로 g2를 그려야하는데 테스트할 때는 매개변수를 받으면 안된단고 함 
+//		super.paintComponent(g);
+//		
+//		//g를 받아서 2d그림으로 바꿔주기
+//		Graphics2D g2 = (Graphics2D)g;
+//
+//
+//		
+//	    // g를 받아서 2d그림으로 바꿔주기
+//	    Graphics2D g2 = (Graphics2D) getGraphics();
+		
+		//스크린화면 바뀔시 한번 화면 초기화시켜주기.
+	    screenRefresh = true;
+		if(screenRefresh) {
+			screenRefresh = false;
+			
+//			g2.setColor(Color.black);
+//			g2.fillRect(0, 0, GamePanelTest.WIDTH, GamePanelTest.HEIGHT);
+			
+		}
+		
+		
+		
+		
+//		switch(screen) {
+//		case 0 : //메인메뉴
+//			mn.draw(g2);
+//			
+//		case 1 : //게임화면
+//			if(battle) {pm2.draw(g2);}
+//			pm.draw(g2);
+//			
+//		case 2 : //스코어보드
+//			sc.draw(g2);
+//			
+//		case 3 : //설정
+//			st.draw(g2);
+//			
+//		}
+		
+		
+	}
+	
+	
+	
+	
+}

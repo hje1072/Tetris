@@ -47,7 +47,7 @@ public class PlayManager {
 	
 	// others
 	public static int dropInterval = 60; // 60fps로 블록 오토드랍
-	boolean gameOver;
+	public boolean gameOver;
 	
 	
 	// 줄삭제이펙트

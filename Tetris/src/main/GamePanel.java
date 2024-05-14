@@ -93,8 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//난이도 불러오기
 	public void readDifficulty() {
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/difficulty.csv";
+        String csvFile = "src/data/difficulty.csv";
         
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
         	difficulty = br.readLine();
@@ -108,8 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//색깔불러오기.
 	public int readcolor() {
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/colorBlind.csv";
+        String csvFile = "src/data/colorBlind.csv";
         String num = "";
         int size = 1;
         
@@ -127,8 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//해상도 불러오기
 	public int readSize() {
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/size.csv";
+        String csvFile = "src/data/size.csv";
         String num = "";
         int size = 1;
         
@@ -150,8 +147,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//키세팅저장csv파일 불러오기.
 		
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/keySetting.csv";
+        String csvFile = "src/data/keySetting.csv";
         String line = "";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -189,8 +185,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		//키세팅저장csv파일 불러오기.
 		
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/keySetting_battle.csv";
+        String csvFile = "src/data/keySetting_battle.csv";
         String line = "";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -545,8 +540,6 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		
 	}
-	
-	
 	
 	
 	

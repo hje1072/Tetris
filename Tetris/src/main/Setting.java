@@ -25,15 +25,12 @@ public class Setting {
 	boolean def_Reset = false;
 	boolean score_Reset = false;
 	
-	//색맹저장용
-	public void colorSet(int colorMode) {
+	private void getFile(int header, String name) {
+		String csvFile = "src/data/" + name;
 		
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/colorBlind.csv";
-		
-        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
+		try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
             // CSV 파일에 데이터 쓰기
-            writer.println(colorMode); // 헤더
+            writer.println(header); // 헤더
             
         } catch (IOException e) {
 
@@ -41,39 +38,34 @@ public class Setting {
         }
 	}
 	
-	//난이도 저장용
-	public void difficultySet(String str) {
+	private void getFile(String header, String name) {
+		String csvFile = "src/data/" + name;
 		
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/difficulty.csv";
-		
-        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
+		try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
             // CSV 파일에 데이터 쓰기
-            writer.println(str); // 헤더
+            writer.println(header); // 헤더
             
         } catch (IOException e) {
 
             e.printStackTrace();
         }
+	}
+	
+	//색맹저장용
+	public void colorSet(int colorMode) {
+        getFile(colorMode, "colorBlind.csv");
+	}
+	
+	//난이도 저장용
+	public void difficultySet(String str) {
+		getFile(str, "difficulty.csv");
 	}
 	
 	
 	//사이즈저장용
 	public void sizeSet(int size) {
-		
-    	String currentDirectory = System.getProperty("user.dir");
-        String csvFile = currentDirectory + "/src/data/size.csv";
-		
-        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
-            // CSV 파일에 데이터 쓰기
-            writer.println(size); // 헤더
-            
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+		getFile(size, "size.csv");
 	}
-	
 	
 	//키세팅용
 	//뒤에꺼를 앞에다 넣을꺼임
@@ -88,46 +80,31 @@ public class Setting {
 	
 	public void keySave(int[] keySet ,boolean p1) {
 		
-		
-		//키세팅저장csv파일에 유저 키세팅 or 디폴트값 저장할거임.
-		
-		
-    	String currentDirectory = System.getProperty("user.dir");
-    	
-    	
-        String csvFile = "";
-        		
+		//키세팅저장csv파일에 유저 키세팅 or 디폴트값 저장할거임.	
+		String csvFile = "";
         if (p1) {
-        	csvFile = currentDirectory + "/src/data/keySetting.csv";
+        	csvFile = "src/data/keySetting.csv";
         }
         else {
-        	csvFile = currentDirectory + "/src/data/keySetting_battle.csv";
+        	csvFile = "src/data/keySetting_battle.csv";
         }
         
-
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile))) {
             // CSV 파일에 데이터 쓰기
-        	
         	for(int i = 0; i < GamePanel.keySetting_Origin.length; i ++) {
         		writer.println(keySet[i]);
         	}
-        	
-            
             
             writer.close();
             
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         
 	}
 	
-	
-	
 	//키보드로 입력받는 거 핸들링하는 곳.
 	public void keyHandling() {
-		
 		
 		if(def_Reset || score_Reset) {
 			//오른쪽
@@ -146,7 +123,6 @@ public class Setting {
 			//위쪽
 			upPress();
 			
-			
 			//오른쪽
 			rightPress();
 			
@@ -158,6 +134,11 @@ public class Setting {
 		}
 		
 		//메뉴로가기
+		menuPress();
+		
+	}
+
+	private void menuPress() {
 		if(KeyHandler.menuPressed) {
 			
 			if(def_Reset || score_Reset || battlekeySet) {
@@ -173,12 +154,8 @@ public class Setting {
 				pointer_x = 0; pointer_y = 0;
 			}
 			
-			
 			KeyHandler.menuPressed = false;
 		}
-		
-		
-		
 	}
 	
 	//확인버튼
@@ -190,38 +167,31 @@ public class Setting {
 			
 			switch(pointer_y) {
 			
-			
 			case 0 :  //레벨
 				switch(pointer_x) {
-				case 0 :
-					// 이지
-					GamePanel.difficulty = "easy";
-					difficultySet("easy");
+				case 0 :// 이지
+					setDifficulty("easy");
 					//System.out.println(GamePanel.difficulty); //연습용
-					
 					break;
 				case 1 : //노말모드
 					// 1280 * 720
-					GamePanel.difficulty = "normal";
-					difficultySet("normal");
+					setDifficulty("normal");
 					//System.out.println(GamePanel.difficulty);//연습용
 					break;
 				case 2 : 
-					GamePanel.difficulty = "hard";
-					difficultySet("hard");
+					setDifficulty("hard");
 					//System.out.println(GamePanel.difficulty);//연습용
 					break;
 				}
 				break;
 				
-				
 			case 1 : //키보드설정1
 				
-				GamePanel.userKeyset =true;
+				GamePanel.userKeyset = true;
 				break;
 			case 2 : //키보드 설정2
 				
-				GamePanel.userKeyset =true;
+				GamePanel.userKeyset = true;
 				break;
 			
 			case 3 : //키보드 세팅 변경 확인용도.
@@ -253,24 +223,15 @@ public class Setting {
 				switch(pointer_x) {
 				case 0 :
 					// 640 * 480
-					GamePanel.SIZE = 0;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
-					
+					setSize(0);
 					break;
 				case 1 : //디폴트값.
 					// 1280 * 720
-					GamePanel.SIZE = 1;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
-					
+					setSize(1);
 					break;
 				case 2 : 
 					//1920 * 1080
-					GamePanel.SIZE = 2;
-					GamePanel.sizeChange = true;
-					sizeSet(GamePanel.SIZE);
-					
+					setSize(2);
 					break;
 				}
 				break;
@@ -279,20 +240,15 @@ public class Setting {
 				
 				switch(pointer_x) {
 				case 0 : //디폴트값.
-					GamePanel.colorMode = 0;
-					colorSet(GamePanel.colorMode);
+					setColor(0);
 					break;
 				case 1 : //적록생맹
-					GamePanel.colorMode = 1;
-					colorSet(GamePanel.colorMode);
-
+					setColor(1);
 					break;
 				case 2 : //청황색맹
-					GamePanel.colorMode = 2;
-					colorSet(GamePanel.colorMode);
+					setColor(2);
 					break;
 				}
-				
 				break;
 				
 			case 7 : //스코어보드초기화.
@@ -322,24 +278,19 @@ public class Setting {
 					case 0 :
 						//사이즈 초기화.
 						def_Reset = false;
-						GamePanel.SIZE = 1;
-						GamePanel.sizeChange = true;
-						sizeSet(GamePanel.SIZE);
+						setSize(1);
 						
-						//색맹모드 초기화.
-						GamePanel.colorMode = 0;
-						colorSet(GamePanel.colorMode);
+						//색맹 모드 초기화
+						setColor(0);
 						
 						//난이도 초기화.
-						GamePanel.difficulty = "normal";
-						difficultySet("normal");
+						setDifficulty("normal");
 						
 						//기본 키보드값으로 초기화.
 						keySet(GamePanel.keySetting, GamePanel.keySetting_Origin, true);
 						keySet(GamePanel.userkeySetting, GamePanel.keySetting, true);
 						keySet(GamePanel.keySetting_battle, GamePanel.keySetting_battle_Origin, false);
 						keySet(GamePanel.userkeySetting_battle, GamePanel.keySetting_battle, false);
-						
 						
 						break;
 					case 1 :
@@ -387,6 +338,27 @@ public class Setting {
 		
 	}
 
+	private void setColor(int num) {
+		GamePanel.colorMode = num;
+		colorSet(GamePanel.colorMode);
+	}
+
+	private void setSize(int num) {
+		GamePanel.SIZE = num;
+		GamePanel.sizeChange = true;
+		sizeSet(GamePanel.SIZE);
+	}
+
+	private void setDifficulty(String diff) {
+		GamePanel.difficulty = diff;
+		difficultySet(diff);
+	}
+	
+	private void setX(int num) {
+		if (pointer_x < 0) {
+			pointer_x = num;
+		}
+	}
 
 	//왼쪽
 	private void leftPress() {
@@ -396,54 +368,38 @@ public class Setting {
 			switch(pointer_y) {
 			
 			case 0 : //해상도 섹션은 x값이 3개임
-				
-				if (pointer_x < 0) {
-					pointer_x = 2;
-				}
+				setX(2);
 				break;
 			case 1 : //키보드 섹션은 x값이 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
+				setX(4);
 				break;
 			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
+				setX(4);
 				break;
 			case 5 : //해상도섹션
-				if ( pointer_x < 0) {
-					pointer_x = 2;
-				}
-				
+				setX(2);
 				break;
 			case 6 : //색맹모드섹션
-				if ( pointer_x < 0) {
-					pointer_x = 2;
-				}
-				
+				setX(2);
 				break;
 			case 101 : //키보드 섹션은 x값이 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
+				setX(4);
 				break;
 			case 102 : //키보드 섹션은 x값 5개임
-				if (pointer_x < 0) {
-					pointer_x = 4;
-				}
+				setX(4);
 				break;
-			
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				if (pointer_x < 0) {
-					pointer_x = 1;
-				}
+				setX(1);
 				break;
 			}
 			KeyHandler.leftPressed = false;
 		}
 	}
 	
+	private void setX1(int num) {
+		if (pointer_x >= num )
+			pointer_x = 0;
+	}
 	
 	//오른쪽
 	private void rightPress() {
@@ -454,51 +410,31 @@ public class Setting {
 			switch(pointer_y) {
 			
 			case 0 : //난이도 조절은 x값이 3개임
-				
-				if (pointer_x >= 3 ) {
-					pointer_x = 0;
-				}
+				setX1(3);
 				break;
 			case 1 : //키보드 섹션은 x값이 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
+				setX1(5);
 				break;
 			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
+				setX1(5);
 				break;
 			case 5 : //해상도 섹션
-				if ( pointer_x >= 3) {
-					pointer_x = 0;
-				}
-				
+				setX1(3);
 				break;
 			case 6 : //색맹모드 섹션
-				if ( pointer_x >= 3) {
-					pointer_x = 0;
-				}
+				setX1(3);
 				break;
-			
 			case 101 : //키보드 섹션은 x값이 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
+				setX1(5);
 				break;
 			case 102 : //키보드 섹션은 x값 5개임
-				if (pointer_x >= 5 ) {
-					pointer_x = 0;
-				}
+				setX1(5);
 				break;
 			
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
-				if (pointer_x >= 2 ) {
-					pointer_x = 0;
-				}
+				setX1(2);
 				break;
 			}
-			
 			KeyHandler.rightPressed = false;
 		}
 	}
@@ -507,72 +443,58 @@ public class Setting {
 	private void upPress() {
 		if (KeyHandler.upPressed == true) {
 			pointer_y -= 1;
-			if (pointer_y < 0) {
+			if (pointer_y < 0)
 				pointer_y = 8;
-			}
 			
 			//y값에 따른 x값 조정
 			switch(pointer_y) {
 			
 			case 0 : //해상도 섹션은 x값이 3개임
 				//5 -> 3 이라 줄여줌
-				
 				pointer_x = (int)(pointer_x / 2);
-				
 				break;
 			case 1 : //키보드 섹션은 x값이 5개임
 				//5 -> 5 개라 x값 변화 x
-				
 				break;
 			case 2 : //키보드 섹션은 x값 5개임
 				//2 -> 5 개라 변화시켜줌
-				
 				pointer_x = 4;
-				
 				break;
 			case 3 : //키보드사설키 변경 accept or reject 하는 구간
 				//키변화가 있을 때에만 접근가능.
-				if(keyChange) {
+				if(keyChange)
 					pointer_x = 0;
-				}
 				else {
 					pointer_y -= 1;
 					pointer_x = 4;
 				}
-				
 				break;
 				
 			case 4 : 
 				//키변화가 있을 때에만 접근가능.
-				if(keyChange) {
+				if(keyChange)
 					pointer_x = 0;
-				}
-				else {
+				else 
 					pointer_x = 0;
-				}
 				
 				break;
 			case 100 :
 				
-				if(keyChange_battle) {
+				if(keyChange_battle)
 					pointer_y = 103;
-				}
-				else {
+				else 
 					pointer_y = 102;
-				}
 				
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
 				
 				if(pointer_y >= 101 && pointer_y <= 102) {}
-				else if (pointer_x >= 2 ) {
+				else if (pointer_x >= 2 )
 					pointer_x = 1;
-				}
+				
 				break;
 			}
-			
 			KeyHandler.upPressed = false;
 		}
-		
 	}
 
 	//아래
@@ -581,9 +503,7 @@ public class Setting {
 		if (KeyHandler.downPressed == true) {
 			pointer_y += 1;
 			if (pointer_y >= 9 ) {
-				if (pointer_y >= 100) {
-					
-				}
+				if (pointer_y >= 100) {}
 				else {pointer_y = 0;}
 			}
 			
@@ -592,71 +512,48 @@ public class Setting {
 			
 			case 0 : //해상도 섹션은 x값이 3개임
 				// 2 -> 3
-				
 				pointer_x = (int)(pointer_x / 2);
 				//System.out.println("나 x인데 :"+ pointer_x);
-				
 				break;
 			case 1 : //키보드 섹션은 x값이 5개임
 				// 3 -> 5
-				
-				pointer_x = (int)(pointer_x * 2) ;
-				
+				pointer_x = (int)(pointer_x * 2);
 				break;
 			case 2 : //키보드 섹션은 x값 5개임
-				if (pointer_x >= 5 ) {
+				if (pointer_x >= 5 )
 					pointer_x = 0;
-				}
-				
+		
 				break;
 			case 3 : //키보드사설키 변경 accept or reject 하는 구간
 				//키변화가 있을 때에만 접근가능.
-				if(keyChange) {
-					
-				}
-				else {
+				if(keyChange) {	}
+				else
 					pointer_y += 1;
-				}
-				if (pointer_x >= 2 ) {
+				
+				if (pointer_x >= 2)
 					pointer_x = 0;
-				}
 				
 				break;
-			
 			case 4 : //나중에 쓸 수 있을 까봐 만들어 놓은거 알아두기.
-				
 				pointer_x = 0;
-				
 				break;
-			
-			
 			case 104 : 
 				pointer_y = 101;
 				break;
-				
 			case 103 :
-				if(keyChange_battle) {
-					
-				}
-				else {
+				if(keyChange_battle) {}
+				else
 					pointer_y = 101;
-				}
 			
 			default : //나머지는 일단 yes or no 밖에 없으니까 x값은 2개
 				if(pointer_y >= 101 && pointer_y <= 102) {}
-				else {
+				else
 					pointer_x = 0;
-				}
 				break;
 			}
-			
-			
-			
 			KeyHandler.downPressed = false;
 		}
-		
 	}
-
 
 	//일시적인 키저장. 적용할지 말지 결정가능.
 	public void usertempKey() {
@@ -670,12 +567,9 @@ public class Setting {
 			
 			keyChange = false;
 			
-			for(int i = 0; i < GamePanel.keySetting.length; i ++) {
-				if(GamePanel.keySetting[i] != GamePanel.userkeySetting[i]) {
+			for(int i = 0; i < GamePanel.keySetting.length; i ++)
+				if(GamePanel.keySetting[i] != GamePanel.userkeySetting[i])
 					keyChange = true;
-				}
-			}
-			
 		}
 	}
 	
@@ -702,151 +596,163 @@ public class Setting {
 	
 	//현재 키보드설정이 어떻게 되어있는지 알려주는놈.
 	public static String whatisKey(int key) {
-		String word = "";
-		
-		//화살표
-		if(key == KeyEvent.VK_UP) {
-			word = "↑";
-		}
-		else if(key == KeyEvent.VK_DOWN) {
-			word = "↓";
-		}
-		else if(key == KeyEvent.VK_LEFT) {
-			word = "←";
-		}
-		else if(key == KeyEvent.VK_RIGHT) {
-			word = "→";
-		}
-		
-		else if(key == KeyEvent.VK_F1) {
-			word = "F1";
-		}
-		else if(key == KeyEvent.VK_F2) {
-			word = "F2";
-		}
-		else if(key == KeyEvent.VK_F3) {
-			word = "F3";
-		}
-		else if(key == KeyEvent.VK_F4) {
-			word = "F4";
-		}
-		else if(key == KeyEvent.VK_F5) {
-			word = "F5";
-		}
-		else if(key == KeyEvent.VK_F6) {
-			word = "F6";
-		}
-		else if(key == KeyEvent.VK_F7) {
-			word = "F7";
-		}
-		else if(key == KeyEvent.VK_F8) {
-			word = "F8";
-		}
-		else if(key == KeyEvent.VK_F9) {
-			word = "F9";
-		}
-		else if(key == KeyEvent.VK_F10) {
-			word = "F10";
-		}
-		else if(key == KeyEvent.VK_F11) {
-			word = "F11";
-		}
-		else if(key == KeyEvent.VK_F12) {
-			word = "F12";
-		}
-		
-		else if(key == KeyEvent.VK_ENTER) {
-			word = "ENTER";
-		}
-		else if(key == KeyEvent.VK_ESCAPE) {
-			word = "ESC";
-		}
-		else if(key == KeyEvent.VK_TAB) {
-			word = "TAB";
-		}
-		else if(key == KeyEvent.VK_SHIFT) {
-			word = "SHIFT";
-		}
-		else if(key == KeyEvent.VK_CONTROL) {
-			word = "CTRL";
-		}
-		else if(key == KeyEvent.VK_ALT) {
-			word = "ALT";
-		}
-		else if(key == KeyEvent.VK_SPACE) {
-			word = "SPACE";
-		}
-		else if(key == KeyEvent.VK_BACK_SPACE) {
-			word = "BACK_SP";
-		}
-		else if(key == KeyEvent.VK_DELETE) {
-			word = "DEL";
-		}
-		else if(key == KeyEvent.VK_HOME) {
-			word = "HOME";
-		}
-		else if(key == KeyEvent.VK_END) {
-			word = "END";
-		}
-		else if(key == KeyEvent.VK_PAGE_UP) {
-			word = "PG_UP";
-		}
-		else if(key == KeyEvent.VK_PAGE_DOWN) {
-			word = "PG_DOWN";
-		}
-		
-		
-		//특수키
-		else if(key == KeyEvent.VK_CAPS_LOCK) {
-			word = "CAPS_LOCK";
-		}
-		else if(key == KeyEvent.VK_NUM_LOCK) {
-			word = "NUM_LOCK";
-		}
-		else if(key == KeyEvent.VK_SCROLL_LOCK) {
-			word = "SCROLL_LOCK";
-		}
-		else if(key == KeyEvent.VK_PRINTSCREEN) {
-			word = "PRINTSCREEN";
-		}
-		else if(key == KeyEvent.VK_PAUSE) {
-			word = "PAUSE";
-		}
-		else if(key == KeyEvent.VK_WINDOWS) {
-			word = "WINDOWS";
-		}
-		else if(key == KeyEvent.VK_CONTEXT_MENU) {
-			word = "MENU";
-		}
-		
+		String word = getArrowKey(key);
+		if (word.isEmpty())
+			word = getFunctionKey(key);
+		if (word.isEmpty())
+			word = getSpecialKey(key);
 		//그외의 일반키들은 char로 바꾸기.
-		
-		else {
+		if (word.isEmpty())
 			word = "" + (char)key;
-		}
 		
 		return word;
 	}
 	
-	
-	public void update() {
-		
-		if (GamePanel.userKeyset) {
-			usertempKey();
-			
-		}
-		else if(GamePanel.userKeyset_battle) {
-			//System.out.println("asdf");
-			usertempKey_battle();
-		}
-		
-		else {
-			keyHandling();
+	public static String getArrowKey(int key) {
+		switch(key) {
+		case KeyEvent.VK_UP:
+			return "↑";
+		case KeyEvent.VK_DOWN:
+			return "↓";
+		case KeyEvent.VK_LEFT:
+			return "←";
+		case KeyEvent.VK_RIGHT:
+			return "→";
+		default:
+			return "";
 		}
 	}
 	
-	//설정은 너무 할많 이라서 2페이지로 설정
+	public static String getFunctionKey(int key) {
+		if (key >= KeyEvent.VK_F1 && key <= KeyEvent.VK_F12)
+			return "F" + (key - KeyEvent.VK_F1 + 1);
+		return "";
+	}
 	
+	public static String getSpecialKey(int key) {
+		switch(key) {
+		case KeyEvent.VK_ENTER:
+			return "ENTER";
+		case KeyEvent.VK_ESCAPE:
+			return "ESC";
+		case KeyEvent.VK_TAB:
+			return "TAB";
+		case KeyEvent.VK_SHIFT:
+			return "SHIFT";
+		case KeyEvent.VK_CONTROL:
+			return "CTRL";
+		case KeyEvent.VK_ALT:
+			return "ALT";
+		case KeyEvent.VK_SPACE:
+			return "SPACE";
+		case KeyEvent.VK_BACK_SPACE:
+			return "BACK_SP";
+		case KeyEvent.VK_DELETE:
+			return "DEL";
+		case KeyEvent.VK_HOME:
+			return "HOME";
+		case KeyEvent.VK_END:
+			return "END";
+		case KeyEvent.VK_PAGE_UP:
+			return "PG_UP";
+		case KeyEvent.VK_PAGE_DOWN:
+			return "PG_DOWN";
+		case KeyEvent.VK_CAPS_LOCK:
+			return "CAPS_LOCK";
+		case KeyEvent.VK_NUM_LOCK:
+			return "NUM_LOCK";
+		case KeyEvent.VK_SCROLL_LOCK:
+			return "SCROLL_LOCK";
+		case KeyEvent.VK_PRINTSCREEN:
+			return "PRINTSCREEN";
+		case KeyEvent.VK_PAUSE:
+			return "PAUSE";
+		case KeyEvent.VK_WINDOWS:
+			return "WINDOWS";
+		case KeyEvent.VK_CONTEXT_MENU:
+			return "MENU";
+		default:
+			return "";
+		}
+	}
+	
+	public void update() {
+		if (GamePanel.userKeyset)
+			usertempKey();
+		else if(GamePanel.userKeyset_battle)
+			//System.out.println("asdf");
+			usertempKey_battle();
+		else
+			keyHandling();
+	}
+	
+	private void drawSetting(Graphics2D g2, int x, int y, int size, String text) {
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, size + size * GamePanel.SIZE));
+		g2.drawString(text, x, y);
+	}
+	
+	private void drawSetting(Graphics2D g2, int x, int y, int size, String text, String font) {
+		g2.setFont(new Font(font, Font.ITALIC, size + size * GamePanel.SIZE));
+		g2.drawString(text, x, y);
+	}
+	
+	private void setColor(Graphics2D g2, int y1, int x1, int x, int y, int size, String text) {
+		g2.setColor((pointer_y == y1 && pointer_x == x1) ? Color.yellow : Color.white);
+		drawSetting(g2, x, y, size, text);
+	}
+	
+	private void setColor(Graphics2D g2, int y1, int x1, int x, int y, int size, String text, String font) {
+		g2.setColor((pointer_y == y1 && pointer_x == x1) ? Color.yellow : Color.white);
+		drawSetting(g2, x, y, size, text, font);
+	}
+	
+	private int keySetting(Graphics2D g2, int x, int y, String[] key) {
+		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
+		g2.setColor(Color.white);
+		g2.setFont(new Font("Times New Roman", Font.PLAIN, 20 + 20 * GamePanel.SIZE));
+		g2.drawString(key[0], x, y);
+		
+		for (int i = 1; i < 5; i++) {
+			x += GamePanel.WIDTH / 8;
+			g2.drawString(key[i], x, y);
+		}
+		
+		return x;
+	} 
+	
+	private int setKey(Graphics2D g2, int x, int y, int num) {
+		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
+		for(int i = 0; i <= 4; i++) {
+			
+			//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
+			//값변경 없으면 하얀색. 값변경 있으면 초록색
+			if (num % 2 == 1) {
+				g2.setColor((pointer_y == num && pointer_x == i) ? (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.gray : Color.green));
+				g2.drawString(whatisKey(GamePanel.userkeySetting[i]), x, y);
+			}
+			else {
+				g2.setColor((pointer_y == num && pointer_x == i) ? (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.gray : Color.green));
+				g2.drawString(whatisKey(GamePanel.userkeySetting[i + 5]), x, y);
+			}
+			x += GamePanel.WIDTH / 8;
+		}
+		return x;
+	}
+	
+	private void acRj(Graphics2D g2, int x, int y, int num) {
+		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
+		g2.setColor(Color.white);
+		g2.drawString("KeySet :", x - GamePanel.WIDTH / 8 , y);
+		
+		g2.setColor(keyChange ?  ((pointer_x == 0 && pointer_y == num) ? Color.yellow :Color.white) : Color.gray);
+		g2.drawString("Accept", x, y);
+		
+		g2.setColor(keyChange ?  ((pointer_x == 1 && pointer_y == num) ? Color.yellow :Color.white) : Color.gray);
+		g2.drawString("Reject", x + GamePanel.WIDTH / 8, y);
+	}
+	
+	//설정은 너무 할많 이라서 2페이지로 설정
 	//얘는 1페이지
 	public void settingPage1(Graphics2D g2) {
 		
@@ -857,120 +763,50 @@ public class Setting {
 		x += 5 + 5 * GamePanel.SIZE;
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("difficulty", x, y);
+		drawSetting(g2, x, y, 20, "difficulty");
 		
 		y += GamePanel.HEIGHT / 15;
-		g2.setColor((pointer_y == 0 && pointer_x == 0) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
-		g2.drawString("easy", x + 5 + 5 * GamePanel.SIZE , y);
+		setColor(g2, 0, 0, x + 5 + 5 * GamePanel.SIZE, y, 30, "easy");
 		
 		x = GamePanel.WIDTH * 5 / 15;
-		g2.setColor((pointer_y == 0 && pointer_x == 1) ? Color.yellow : Color.white);
-		g2.drawString("normal", x + 5 + 5 * GamePanel.SIZE , y);
+		setColor(g2, 0, 1, x + 5 + 5 * GamePanel.SIZE, y, 30, "normal");
 		
 		x = GamePanel.WIDTH * 3 / 5;
-		g2.setColor((pointer_y == 0 && pointer_x == 2) ? Color.yellow : Color.white);
-		g2.drawString("hard", x + 5 + 5 * GamePanel.SIZE , y);
+		setColor(g2, 0, 2, x + 5 + 5 * GamePanel.SIZE, y, 30, "hard");
 		
-		x+= GamePanel.WIDTH / 8;
+		x += GamePanel.WIDTH / 8;
 		g2.setColor(Color.gray);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("["+GamePanel.difficulty+"]", x + 5 + 5 * GamePanel.SIZE , y);
+		drawSetting(g2, x + 5 + 5 * GamePanel.SIZE, y, 20, "["+GamePanel.difficulty+"]");
 		g2.drawString("current", x + 5 + 5 * GamePanel.SIZE , y - GamePanel.HEIGHT / 15);
-		
 		
 		//키세팅 그리기
 		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("keysetting", x, y);
-		
+		drawSetting(g2, x, y, 20, "keysetting");
 		
 		//키설명용 첫번째줄
-		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 		y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 16 * 3;
-		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.PLAIN, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("[↑]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[←]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[↓]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[→]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[turn]", x, y);
+		String[] key = new String[] {"[↑]", "[←]", "[↓]", "[→]", "[turn]"};
+		x = keySetting(g2, x, y, key);
 		
 		//키세팅용 첫번째 줄
-		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 		y = GamePanel.HEIGHT / 13 * 5 ;
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
-		for(int i = 0; i <= 4; i++) {
-			
-			//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
-			//값변경 없으면 하얀색. 값변경 있으면 초록색
-			g2.setColor((pointer_y == 1 && pointer_x == i) ? (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.gray : Color.green));
-			g2.drawString(whatisKey(GamePanel.userkeySetting[i]), x, y);
-			
-			x += GamePanel.WIDTH / 8;
-		}
+		x = setKey(g2, x, y, 1);
 		
 		//키설명용 두번째줄
-		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 		y = GamePanel.HEIGHT / 2 * 10 / 9;
-		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.PLAIN, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("[quit]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[skill]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[pause]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[menu]", x, y);
-		
-		x += GamePanel.WIDTH / 8;
-		g2.drawString("[OK]", x, y);
-		
+		String[] key1 = new String[] {"[quit]", "[skill]", "[pause]", "[menu]", "[OK]"};
+		x = keySetting(g2, x, y, key1);
 		
 		//키세팅용 두번째 줄
-		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 		y = GamePanel.HEIGHT / 2;
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
-		
-		for(int i = 0; i <= 4; i++) {
-			
-			//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
-			//값변경 없으면 하얀색. 값변경 있으면 초록색
-			g2.setColor((pointer_y == 2 && pointer_x == i) ? (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.gray : Color.green));
-			g2.drawString(whatisKey(GamePanel.userkeySetting[i + 5]), x, y);
-			
-			x += GamePanel.WIDTH / 8;
-		}
-		
-		
+		x = setKey(g2, x, y, 2);
 		
 		//키세팅 apply cancel 용도
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		x -= GamePanel.WIDTH / 8;
 		y += GamePanel.HEIGHT / 8;
-		g2.setColor(Color.white);
-		g2.drawString("KeySet :", x  - GamePanel.WIDTH / 8 , y);
-		
-		g2.setColor(keyChange ?  ((pointer_x == 0 && pointer_y == 3) ? Color.yellow :Color.white) : Color.gray);
-		g2.drawString("Accept", x, y);
-		
-		g2.setColor(keyChange ?  ((pointer_x == 1 && pointer_y == 3) ? Color.yellow :Color.white) : Color.gray);
-		g2.drawString("Reject", x + GamePanel.WIDTH / 8, y);
-		
+		acRj(g2, x, y, 3);
 		
 		//대전모드용
 		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
@@ -992,92 +828,34 @@ public class Setting {
 			g2.drawRect(x, y, GamePanel.WIDTH * 3 / 4, GamePanel.HEIGHT * 2 / 4); 
 			
 			//키설명용 첫번째줄
-			x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 			y = GamePanel.HEIGHT / 8 * 2 + GamePanel.HEIGHT / 16 * 3;
-			g2.setColor(Color.white);
-			g2.setFont(new Font("Times New Roman", Font.PLAIN, 20 + 20 * GamePanel.SIZE));
-			g2.drawString("[P1.←]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P1.↓]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P1.→]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P1.turn]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P1.skill]", x, y);
+			String[] p1Key = new String[] {"[P1.←]", "[P1.↓]", "[P1.→]", "[P1.turn]", "[P1.skill]"};
+			x = keySetting(g2, x, y, p1Key);
 			
 			//키세팅용 첫번째 줄
-			x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 			y = GamePanel.HEIGHT / 13 * 5 ;
-			g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
-			for(int i = 0; i <= 4; i++) {
-				
-				//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
-				//값변경 없으면 하얀색. 값변경 있으면 초록색
-				g2.setColor((pointer_y == 101 && pointer_x == i) ? (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i] == GamePanel.keySetting[i] ? Color.gray : Color.green));
-				g2.drawString(whatisKey(GamePanel.userkeySetting_battle[i]), x, y);
-				
-				x += GamePanel.WIDTH / 8;
-			}
+			x = setKey(g2, x, y, 101);
 			
 			//키설명용 두번째줄
-			x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 			y = GamePanel.HEIGHT / 2 * 10 / 9;
-			g2.setColor(Color.white);
-			g2.setFont(new Font("Times New Roman", Font.PLAIN, 20 + 20 * GamePanel.SIZE));
-			g2.drawString("[P2.←]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P2.↓]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P2.→]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P2.turn]", x, y);
-			
-			x += GamePanel.WIDTH / 8;
-			g2.drawString("[P2.skill]", x, y);
-			
+			String[] p2Key = new String[] {"[P2.←]", "[P2.↓]", "[P2.→]", "[P2.turn]", "[P2.skill]"};
+			x = keySetting(g2, x, y, p2Key);
 			
 			//키세팅용 두번째 줄
-			x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
 			y = GamePanel.HEIGHT / 2;
-			g2.setFont(new Font("Times New Roman", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
-			
-			for(int i = 0; i <= 4; i++) {
-				
-				//포인터위에 있는 값으면 노란색. 값변경이 있는데 포인터위 값이면 초록색.
-				//값변경 없으면 하얀색. 값변경 있으면 초록색
-				g2.setColor((pointer_y == 102 && pointer_x == i) ? (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.yellow : Color.red) : (GamePanel.userkeySetting[i + 5] == GamePanel.keySetting[i + 5] ? Color.gray : Color.green));
-				g2.drawString(whatisKey(GamePanel.userkeySetting_battle[i + 5]), x, y);
-				
-				x += GamePanel.WIDTH / 8;
-			}
-			
+			x = setKey(g2, x, y, 102);
+		
 			//키세팅 apply cancel 용도
-			g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 			x -= GamePanel.WIDTH / 8;
 			y += GamePanel.HEIGHT / 8;
-			g2.setColor(Color.white);
-			g2.drawString("KeySet :", x  - GamePanel.WIDTH / 8 , y);
-			
-			g2.setColor(keyChange_battle ?  ((pointer_x == 0 && pointer_y == 103) ? Color.yellow :Color.white) : Color.gray);
-			g2.drawString("Accept", x, y);
-			
-			g2.setColor(keyChange_battle ?  ((pointer_x == 1 && pointer_y == 103) ? Color.yellow :Color.white) : Color.gray);
-			g2.drawString("Reject", x + GamePanel.WIDTH / 8, y);
-			
+			acRj(g2, x, y, 103);
 		}
-		
-		
-		
-		
-		
+	}
+	
+	private void colorChange(Graphics2D g2, int x, int y, int size) {
+		setColor(g2, 6, 0, x, y, 15, "기본", "맑은고딕");
+		setColor(g2, 6, 1, x + GamePanel.WIDTH / 8, y, size, "[적록색맹]", "맑은고딕");
+		setColor(g2, 6, 2, x + GamePanel.WIDTH / 8 * 2, y, size, "[청황색맹]", "맑은고딕");
 	}
 	
 	//2페이지
@@ -1091,27 +869,16 @@ public class Setting {
 		y += GamePanel.HEIGHT / 15;	
 		
 		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("screen size", x, y);
+		drawSetting(g2, x, y, 20, "screen size");
 		
 		y += GamePanel.HEIGHT / 15;
-		g2.setColor((pointer_y == 5 && pointer_x == 0) ? Color.yellow : Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 30 + 30 * GamePanel.SIZE));
-		g2.drawString("small", x + 5 + 5 * GamePanel.SIZE , y);
+		setColor(g2, 5, 0, x + 5 + 5 * GamePanel.SIZE, y, 30, "small");
 		
 		x = GamePanel.WIDTH * 5 / 13;
-		g2.setColor((pointer_y == 5 && pointer_x == 1) ? Color.yellow : Color.white);
-		g2.drawString("middle", x + 5 + 5 * GamePanel.SIZE , y);
+		setColor(g2, 5, 1, x + 5 + 5 * GamePanel.SIZE, y, 30, "middle");
 		
 		x = GamePanel.WIDTH * 2 / 3;
-		g2.setColor((pointer_y == 5 && pointer_x == 2) ? Color.yellow : Color.white);
-		g2.drawString("large", x + 5 + 5 * GamePanel.SIZE , y);
-		
-		
-		
-		
-		
-		
+		setColor(g2, 5, 2, x + 5 + 5 * GamePanel.SIZE, y, 30, "large");
 		
 		//색맹모드
 		x = GamePanel.WIDTH / 8 + 5 * GamePanel.SIZE;
@@ -1120,23 +887,11 @@ public class Setting {
 		x += 5 + 5 * GamePanel.SIZE;
 		y += GamePanel.HEIGHT / 15;
 		g2.setColor(Color.white);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
-		g2.drawString("Color Blind Mode", x, y);
+		drawSetting(g2, x, y, 20, "Color Blind Mode");
 		
 		//색맹모드 apply cancel 용도
 		x += GamePanel.WIDTH / 9 * 3;
-		
-		g2.setFont(new Font("맑은고딕", Font.ITALIC, 15 + 15 * GamePanel.SIZE));
-		g2.setColor((pointer_y == 6 && pointer_x == 0) ? Color.yellow :Color.white);
-		g2.drawString("기본", x, y);
-		
-		
-		g2.setColor((pointer_y == 6 && pointer_x == 1) ? Color.yellow :Color.white);		
-		g2.drawString("[적록색맹]", x + GamePanel.WIDTH / 8, y);
-		
-		g2.setColor((pointer_y == 6 && pointer_x == 2) ? Color.yellow :Color.white);		
-		g2.drawString("[청황색맹]", x + GamePanel.WIDTH / 8 * 2 , y);
-		
+		colorChange(g2, x, y, 15);
 		
 		//스코어보드 초기화용
 		x = GamePanel.WIDTH / 8 + 5 + 5 * GamePanel.SIZE;
@@ -1146,26 +901,21 @@ public class Setting {
 		g2.setColor(Color.white);
 		g2.drawString("ScoreBoard Reset", x, y);
 		
-		
 		x += GamePanel.WIDTH / 8 * 4;
 		g2.setColor(pointer_y == 7 ? Color.yellow :Color.white);
 		g2.drawString("Reset", x + GamePanel.WIDTH / 8, y);
-		
-		
-		
 		
 		//임시 default용
 		x = GamePanel.WIDTH / 5;
 		y = GamePanel.HEIGHT / 4 * 3;
 		g2.setColor((pointer_y == 8)? Color.red : Color.gray);
-		g2.setFont(new Font("Times New Roman", Font.ITALIC, 40 + 40 * GamePanel.SIZE));
-		g2.drawString("Default Initialization!!!", x, y);
+		drawSetting(g2, x, y, 40, "Default Initialization!!!");
 		
 		//초기화 시 확인용
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 20 + 20 * GamePanel.SIZE));
 		if(score_Reset) {
-			 x = GamePanel.WIDTH * 1/ 3;
-			 y = GamePanel.HEIGHT * 1/ 3;
+			x = GamePanel.WIDTH * 1/ 3;
+			y = GamePanel.HEIGHT * 1/ 3;
 			
 			g2.setColor(Color.black);
 			g2.setStroke(new BasicStroke(4f)); //테두리크기 4픽셀이라는 뜻
@@ -1183,13 +933,12 @@ public class Setting {
 			
 			g2.setColor((pointer_x == 1) ? Color.yellow :Color.white);		
 			g2.drawString("No", x + GamePanel.WIDTH / 8, y + GamePanel.HEIGHT * 1 / 5);
-			
 		}
 		
 		//디폴트 돌릴 때 확인용.
 		if(def_Reset) {
-			 x = GamePanel.WIDTH * 1/ 3;
-			 y = GamePanel.HEIGHT * 1/ 3;
+			x = GamePanel.WIDTH * 1/ 3;
+			y = GamePanel.HEIGHT * 1/ 3;
 			
 			g2.setColor(Color.black);
 			g2.setStroke(new BasicStroke(4f)); //테두리크기 4픽셀이라는 뜻
@@ -1207,14 +956,10 @@ public class Setting {
 			
 			g2.setColor((pointer_x == 1) ? Color.yellow :Color.white);		
 			g2.drawString("No", x + GamePanel.WIDTH / 8, y + GamePanel.HEIGHT * 1 / 5);
-			
 		}
 	}
 	
-	
 	public void draw(Graphics2D g2) {
-		
-		
 		int x = GamePanel.WIDTH / 8;
 		int y = GamePanel.HEIGHT / 8;
 		
@@ -1226,22 +971,9 @@ public class Setting {
 		g2.setFont(new Font("Times New Roman", Font.ITALIC, 60 + 60 * GamePanel.SIZE));
 		g2.drawString("Setting<"+(pointer_y<= 4 || pointer_y >=100 ? 1 :2)+"/2>", x, y);
 		
-		if(pointer_y <= 4 || pointer_y >=100) {
+		if(pointer_y <= 4 || pointer_y >=100)
 			settingPage1(g2);
-		}
-		else {
+		else
 			settingPage2(g2);
-			
-		}
-		
 	}
-	
-	
-	
 }
-	
-	
-	
-	
-	
-	
