@@ -157,3 +157,35 @@
 - 스킬 사용법 : S블록을 제거하면 다음 블록으로 아이템블록이 생성됩니다.
 
 ![S블럭-아이템](https://github.com/hje1072/Tetris/assets/70854950/30516b36-61b6-4143-88da-d2096c7da361)
+
+<br>
+
+### [Battle Mode]
+
+| Basic Battle Mode |
+|----------|
+- 추가 규칙 : 한 줄을 삭제 할 때마다 상대방에게 공격할 줄을 생성합니다.
+
+![Battle-mode](https://github.com/hje1072/Tetris/assets/70854950/7bff5f6f-becf-4d9b-ac36-656523e39ede)
+
+> 참고사항
+- 공격할 줄이 10줄이 넘어갔을 경우 맨 윗줄 삭제   
+(시연을 위해 1줄만 완성해도 공격하는 것으로 표현)
+
+![10줄-초과](https://github.com/hje1072/Tetris/assets/70854950/9b2edaee-147c-4cff-9f12-7bb9af34e3cc)
+
+
+| Item Battle Mode |
+|----------|
+- 추가 규칙 : Basic Battle Mode에 Item Mode를 추가합니다.   
+(시연을 위해 1줄만 완성해도 Item이 생성되는 것으로 구현)
+
+![아이템-배틀-모드](https://github.com/hje1072/Tetris/assets/70854950/10a22fa9-a3e2-47c2-8870-1086089463b4)
+
+
+| Time Limit Battle Mode |
+|----------|
+- 추가 규칙 : Basic Battle Mode에 시간 제한을 추가합니다.   
+(제한시간을 몇 분으로 할 지 게임 시작 전에 선택할 수 있습니다.)
+
+![Time-Limit-Battle](https://github.com/hje1072/Tetris/assets/70854950/fbca7040-2d2e-4628-a814-9712670af874)   
