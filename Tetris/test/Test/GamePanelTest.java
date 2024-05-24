@@ -521,7 +521,7 @@ public class GamePanelTest extends JPanel implements Runnable {
 		case 2 : //스코어보드
 			sc.update();
 			KeyHandler.keyCheck();
-			
+			break;
 		
 		case 3 : //설정
 			st.update();
