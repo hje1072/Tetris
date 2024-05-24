@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import main_battle.KeyHandler_2;
 import main_battle.PlayManager_Battle;
 import mino.Block;
+import mino.Mino;
 public class GamePanel extends JPanel implements Runnable {
 	
 	//해상도 변경용도 0 : small, 1 : middle0, 2 : large
@@ -224,6 +225,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static boolean enteringScore;
 	public static String score = "0";
 	public static String difficulty;
+	public static Mino currentMino;
 	
 	//생성자.
 	public GamePanel() {
